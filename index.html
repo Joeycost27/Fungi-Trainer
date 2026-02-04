@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fungi Spelling Trainer - PTI Certification Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #1e40af;
+            font-size: 32px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .header .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .instructions {
+            background: #fef3c7;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #f59e0b;
+            margin-bottom: 20px;
+        }
+        .instructions h3 {
+            color: #92400e;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .instructions p {
+            color: #78350f;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #1e40af, #7c3aed);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            color: #1e40af;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .question-card {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+        .question-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        .fungus-hint {
+            background: #f0f9ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: #1e40af;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .observation-clues {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #1e40af;
+        }
+        .observation-clues h3 {
+            color: #1e40af;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .clue-section {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .clue-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .clue-label {
+            font-weight: bold;
+            color: #1e40af;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .clue-text {
+            color: #333;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        .answer-section {
+            background: #fef3c7;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .answer-section h3 {
+            color: #92400e;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 3px solid #f59e0b;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-style: italic;
+            transition: all 0.3s;
+        }
+        .answer-input:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        .answer-hint {
+            margin-top: 10px;
+            color: #78350f;
+            font-size: 13px;
+            font-style: italic;
+        }
+        .submit-btn {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+        }
+        .submit-btn:hover {
+            background: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+        }
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .score-display {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid #22c55e;
+        }
+        .score-display.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        .score-display.perfect {
+            border-left-color: #22c55e;
+            background: linear-gradient(to right, #f0fdf4, white);
+        }
+        .score-display.good {
+            border-left-color: #3b82f6;
+            background: linear-gradient(to right, #eff6ff, white);
+        }
+        .score-display.wrong {
+            border-left-color: #ef4444;
+            background: linear-gradient(to right, #fef2f2, white);
+        }
+        .score-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        .score-feedback {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .correct-answer {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .correct-answer-label {
+            font-size: 13px;
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .correct-answer-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1e40af;
+            font-style: italic;
+        }
+        .correct-answer-common {
+            color: #666;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        .next-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+            margin: 20px auto 0;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+        .next-btn:hover {
+            background: #6d28d9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        }
+        .reading-pane {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            display: none;
+        }
+        .reading-pane.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        .reading-pane h2 {
+            color: #1e40af;
+            font-size: 26px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 3px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+        .reading-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #7c3aed;
+        }
+        .reading-section h3 {
+            color: #7c3aed;
+            font-size: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .reading-section p {
+            color: #333;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        .differentiators {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .differentiator-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .unique-features {
+            background: #dcfce7;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #22c55e;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: white;
+            font-size: 20px;
+        }
+        .error {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            .question-card, .reading-pane {
+                padding: 20px;
+            }
+            .stats {
+                gap: 15px;
+            }
+            .stat-value {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="loading" id="loadingMsg">🍄 Loading fungi database...</div>
+        
+        <div class="header" style="display: none;" id="headerSection">
+            <h1>🍄 Fungi Spelling Trainer</h1>
+            <div class="subtitle">Professional Tree Inspection Certification Tool</div>
+            
+            <div class="instructions">
+                <h3>📋 How to Use This Trainer</h3>
+                <p>Based on the field observations (roots, butt, stem, branches, foliage), identify the fungus and type its full Latin binomial name. Scoring: Perfect spelling = 10 points, Minor typos = 8 points, Genus only = 4 points. After answering, review detailed identification notes to reinforce learning.</p>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Progress</div>
+                    <div class="stat-value" id="attempted">0 / 0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Average Score</div>
+                    <div class="stat-value" id="avgScore">-</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Perfect Answers</div>
+                    <div class="stat-value" id="perfectCount">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-card" style="display: none;" id="questionCard">
+            <div class="question-header">
+                <div class="question-number" id="questionNum">Question 1</div>
+                <div class="fungus-hint">🔬 Field Observations</div>
+            </div>
+            
+            <div class="observation-clues">
+                <h3>🌳 Tree Assessment Observations</h3>
+                <div class="clue-section" id="clueRoots"></div>
+                <div class="clue-section" id="clueButt"></div>
+                <div class="clue-section" id="clueLowerStem"></div>
+                <div class="clue-section" id="clueUpperStem"></div>
+                <div class="clue-section" id="clueBranches"></div>
+                <div class="clue-section" id="clueFoliage"></div>
+            </div>
+            
+            <div class="answer-section">
+                <h3>✍️ Your Diagnosis</h3>
+                <input 
+                    type="text" 
+                    class="answer-input" 
+                    id="answerInput" 
+                    placeholder="Type the full Latin binomial name (e.g., Armillaria mellea)"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <div class="answer-hint">💡 Type carefully - spelling matters for certification!</div>
+            </div>
+            
+            <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">
+                Check Answer
+            </button>
+            
+            <div class="score-display" id="scoreDisplay">
+                <div class="score-number" id="scoreNum">0/10</div>
+                <div class="score-feedback" id="scoreFeedback"></div>
+                <div class="correct-answer">
+                    <div class="correct-answer-label">Correct Answer:</div>
+                    <div class="correct-answer-text" id="correctLatin"></div>
+                    <div class="correct-answer-common" id="correctCommon"></div>
+                </div>
+            </div>
+            
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
+                Next Fungus →
+            </button>
+        </div>
+        
+        <div class="reading-pane" id="readingPane">
+            <h2>📚 Detailed Identification Notes</h2>
+            
+            <div class="reading-section">
+                <h3>🎯 Why This Fungus?</h3>
+                <p id="whyThisFungus"></p>
+            </div>
+            
+            <div class="reading-section">
+                <h3>🔍 Key Differentiators</h3>
+                <div class="differentiators" id="differentiators"></div>
+            </div>
+            
+            <div class="reading-section">
+                <h3>⚕️ Clinical Notes</h3>
+                <p id="clinicalNotes"></p>
+            </div>
+            
+            <div class="reading-section">
+                <h3>📝 Exam Tips</h3>
+                <p id="examTip"></p>
+            </div>
+        </div>
+    </div>
+
+<script>
+let allFungi = [];
+let currentIndex = 0;
+let userProgress = {
+    attempted: [],
+    scores: [],
+    perfectCount: 0
+};
+
+// Load progress from localStorage
+const savedProgress = localStorage.getItem('fungiSpellingProgress');
+if (savedProgress) {
+    userProgress = JSON.parse(savedProgress);
+}
+
+// Load TSV data from /tsv/ folder
+async function loadFungiData() {
+    try {
+        const response = await fetch('./tsv/fungi_data.tsv');
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load TSV file: ${response.status} ${response.statusText}`);
+        }
+        
+        const tsvText = await response.text();
+        const lines = tsvText.trim().split('\n');
+        
+        // Skip header row
+        const dataLines = lines.slice(1);
+        
+        allFungi = dataLines.map(line => {
+            const cols = line.split('\t').map(c => c.trim());
+            return {
+                id: cols[0],
+                active: cols[1],
+                latinName: cols[2],
+                commonName: cols[3],
+                clueRoots: cols[4],
+                clueButt: cols[5],
+                clueLowerStem: cols[6],
+                clueUpperStem: cols[7],
+                clueBranches: cols[8],
+                clueFoliage: cols[9],
+                whyThis: cols[10],
+                differentiators: cols[11],
+                clinical: cols[12],
+                examTip: cols[13],
+                imageRef: cols[14]
+            };
+        }).filter(f => f.active === 'YES');
+        
+        if (allFungi.length === 0) {
+            throw new Error('No active fungi found in TSV file');
+        }
+        
+        // Shuffle fungi for varied practice
+        allFungi = shuffleArray(allFungi);
+        
+        // Hide loading, show interface
+        document.getElementById('loadingMsg').style.display = 'none';
+        document.getElementById('headerSection').style.display = 'block';
+        document.getElementById('questionCard').style.display = 'block';
+        
+        displayFungus(0);
+        updateStats();
+        
+    } catch (error) {
+        document.getElementById('loadingMsg').innerHTML = 
+            `<div class="error">
+                <h2>❌ Error Loading Fungi Database</h2>
+                <p style="margin-top: 10px;">${error.message}</p>
+                <p style="margin-top: 10px; font-size: 14px;">Make sure your TSV file is located at: <code>./tsv/fungi_data.tsv</code></p>
+            </div>`;
+    }
+}
+
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function displayFungus(index) {
+    currentIndex = index;
+    const fungus = allFungi[index];
+    
+    document.getElementById('questionNum').textContent = `Question ${index + 1} of ${allFungi.length}`;
+    
+    // Display clues
+    document.getElementById('clueRoots').innerHTML = 
+        `<span class="clue-label">🌱 Roots:</span><div class="clue-text">${fungus.clueRoots}</div>`;
+    document.getElementById('clueButt').innerHTML = 
+        `<span class="clue-label">🪵 Butt:</span><div class="clue-text">${fungus.clueButt}</div>`;
+    document.getElementById('clueLowerStem').innerHTML = 
+        `<span class="clue-label">📏 Lower Stem:</span><div class="clue-text">${fungus.clueLowerStem}</div>`;
+    document.getElementById('clueUpperStem').innerHTML = 
+        `<span class="clue-label">📐 Upper Stem:</span><div class="clue-text">${fungus.clueUpperStem}</div>`;
+    document.getElementById('clueBranches').innerHTML = 
+        `<span class="clue-label">🌿 Branches:</span><div class="clue-text">${fungus.clueBranches}</div>`;
+    document.getElementById('clueFoliage').innerHTML = 
+        `<span class="clue-label">🍃 Foliage:</span><div class="clue-text">${fungus.clueFoliage}</div>`;
+    
+    // Reset input and displays
+    document.getElementById('answerInput').value = '';
+    document.getElementById('answerInput').disabled = false;
+    document.getElementById('submitBtn').style.display = 'block';
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('scoreDisplay').classList.remove('show', 'perfect', 'good', 'wrong');
+    document.getElementById('readingPane').classList.remove('show');
+    document.getElementById('nextBtn').style.display = 'none';
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function levenshteinDistance(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
+            }
+        }
+    }
+    
+    return dp[m][n];
+}
+
+function checkAnswer() {
+    const fungus = allFungi[currentIndex];
+    const userInput = document.getElementById('answerInput').value.trim();
+    const correctAnswer = fungus.latinName.toLowerCase();
+    const userAnswer = userInput.toLowerCase();
+    
+    if (!userInput) {
+        alert('Please type an answer first!');
+        return;
+    }
+    
+    const [correctGenus, correctSpecies] = correctAnswer.split(' ');
+    const parts = userAnswer.split(' ');
+    const userGenus = parts[0] || '';
+    const userSpecies = parts[1] || '';
+    
+    let score = 0;
+    let feedback = '';
+    let scoreClass = 'wrong';
+    
+    // Perfect match
+    if (userAnswer === correctAnswer) {
+        score = 10;
+        feedback = '🎉 Perfect! Excellent spelling!';
+        scoreClass = 'perfect';
+        userProgress.perfectCount++;
+    }
+    // Minor typos (1-2 characters off)
+    else if (userGenus && userSpecies) {
+        const genusDistance = levenshteinDistance(userGenus, correctGenus);
+        const speciesDistance = levenshteinDistance(userSpecies, correctSpecies);
+        const totalDistance = genusDistance + speciesDistance;
+        
+        if (totalDistance <= 2) {
+            score = 8;
+            feedback = '👍 Nearly perfect - minor spelling error';
+            scoreClass = 'good';
+        } else if (userGenus === correctGenus && userSpecies !== correctSpecies) {
+            score = 5;
+            feedback = '✓ Genus correct, species incorrect';
+            scoreClass = 'good';
+        } else if (totalDistance <= 4) {
+            score = 3;
+            feedback = '📝 Close - check spelling carefully';
+            scoreClass = 'good';
+        }
+    }
+    // Genus only
+    else if (!userSpecies && userGenus === correctGenus) {
+        score = 4;
+        feedback = '⚠️ Genus correct - need species name too';
+        scoreClass = 'good';
+    }
+    
+    // No score earned
+    if (score === 0) {
+        feedback = '❌ Incorrect - review the clues';
+    }
+    
+    // Display score
+    document.getElementById('scoreNum').textContent = `${score}/10`;
+    document.getElementById('scoreFeedback').textContent = feedback;
+    document.getElementById('correctLatin').textContent = fungus.latinName;
+    document.getElementById('correctCommon').textContent = `(${fungus.commonName})`;
+    
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    scoreDisplay.classList.remove('perfect', 'good', 'wrong');
+    scoreDisplay.classList.add('show', scoreClass);
+    
+    // Display reading pane
+    displayReadingPane(fungus);
+    
+    // Save progress
+    if (!userProgress.attempted.includes(currentIndex)) {
+        userProgress.attempted.push(currentIndex);
+    }
+    userProgress.scores.push(score);
+    localStorage.setItem('fungiSpellingProgress', JSON.stringify(userProgress));
+    
+    // Disable input and show next button
+    document.getElementById('answerInput').disabled = true;
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'block';
+    
+    updateStats();
+}
+
+function displayReadingPane(fungus) {
+    document.getElementById('whyThisFungus').textContent = fungus.whyThis;
+    document.getElementById('clinicalNotes').textContent = fungus.clinical;
+    document.getElementById('examTip').textContent = fungus.examTip;
+    
+    // Parse differentiators
+    const diffContainer = document.getElementById('differentiators');
+    const diffParts = fungus.differentiators.split('. UNIQUE TO');
+    const comparisons = diffParts[0].split(/(?=[A-Z][A-Z]+:)/);
+    const unique = diffParts[1] || '';
+    
+    let html = '';
+    comparisons.forEach(comp => {
+        if (comp.trim()) {
+            html += `<div class="differentiator-item">${comp.trim()}</div>`;
+        }
+    });
+    
+    if (unique) {
+        html += `<div class="unique-features"><strong>✅ UNIQUE TO ${fungus.latinName.split(' ')[0].toUpperCase()}:</strong>${unique}</div>`;
+    }
+    
+    diffContainer.innerHTML = html;
+    
+    document.getElementById('readingPane').classList.add('show');
+}
+
+function nextQuestion() {
+    if (currentIndex < allFungi.length - 1) {
+        displayFungus(currentIndex + 1);
+    } else {
+        // Completed all fungi
+        alert(`🎉 Completed all ${allFungi.length} fungi!\n\nAverage Score: ${calculateAverage().toFixed(1)}/10\nPerfect Answers: ${userProgress.perfectCount}\n\nRefresh page to practice again!`);
+    }
+}
+
+function updateStats() {
+    const attempted = userProgress.attempted.length;
+    const total = allFungi.length;
+    const avgScore = calculateAverage();
+    
+    document.getElementById('attempted').textContent = `${attempted} / ${total}`;
+    document.getElementById('avgScore').textContent = attempted > 0 ? `${avgScore.toFixed(1)}/10` : '-';
+    document.getElementById('perfectCount').textContent = userProgress.perfectCount;
+    
+    const progress = (attempted / total) * 100;
+    document.getElementById('progressFill').style.width = `${progress}%`;
+}
+
+function calculateAverage() {
+    if (userProgress.scores.length === 0) return 0;
+    const sum = userProgress.scores.reduce((a, b) => a + b, 0);
+    return sum / userProgress.scores.length;
+}
+
+// Allow Enter key to submit
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('answerInput');
+    if (input) {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !input.disabled) {
+                checkAnswer();
+            }
+        });
+    }
+    
+    // Load fungi data on page load
+    loadFungiData();
+});
+</script>
+</body>
+</html>
