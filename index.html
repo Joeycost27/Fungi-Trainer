@@ -725,13 +725,17 @@ function displayReadingPane(fungus) {
     // Parse differentiators
     const diffContainer = document.getElementById('differentiators');
     const diffParts = fungus.differentiators.split('. UNIQUE TO');
-    const comparisons = diffParts[0].split(/(?=[A-Z][A-Z]+:)/);
+    
+    // Split on pattern: ". " followed by UPPERCASE WORD followed by ":"
+    // This splits "GANODERMA: text. MERIPILUS: text" correctly
+    const comparisons = diffParts[0].split(/\.\s+(?=[A-Z\s]+:)/).filter(s => s.trim());
     const unique = diffParts[1] || '';
     
     let html = '';
     comparisons.forEach(comp => {
-        if (comp.trim()) {
-            html += `<div class="differentiator-item">${comp.trim()}</div>`;
+        const trimmed = comp.trim();
+        if (trimmed && trimmed.length > 0) {
+            html += `<div class="differentiator-item">${trimmed}</div>`;
         }
     });
     
