@@ -4,493 +4,910 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fungi Spelling Trainer - PTI Certification Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --navy: #1a2744;
+            --indigo: #2d4a8a;
+            --violet: #6b3fa0;
+            --sage: #4a7c6b;
+            --amber: #c8860a;
+            --slate: #3d4f6b;
+            --cream: #faf8f3;
+            --warm-white: #fffef9;
+            --mid-grey: #8a929e;
+            --light-border: #e8e4db;
+            --correct: #2a7a4b;
+            --warn: #b55a10;
+            --error: #8b1a1a;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--navy);
+            background-image: 
+                radial-gradient(ellipse at 20% 10%, rgba(107, 63, 160, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(45, 74, 138, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(26, 39, 68, 1) 0%, transparent 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px 16px 60px;
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+
+        .container { max-width: 860px; margin: 0 auto; }
+
+        /* ─── HEADER ─── */
         .header {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin-bottom: 30px;
+            background: var(--warm-white);
+            padding: 32px 36px 28px;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.8) inset;
+            margin-bottom: 24px;
+            border: 1px solid var(--light-border);
         }
-        .header h1 {
-            color: #1e40af;
-            font-size: 32px;
-            margin-bottom: 5px;
-            text-align: center;
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        .header .subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 20px;
+        .header-title-block h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--navy);
+            font-size: 28px;
+            letter-spacing: -0.3px;
         }
-        .instructions {
-            background: #fef3c7;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border-left: 4px solid #f59e0b;
-            margin-bottom: 20px;
-        }
-        .instructions h3 {
-            color: #92400e;
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-        .instructions p {
-            color: #78350f;
+        .header-title-block .subtitle {
+            color: var(--mid-grey);
             font-size: 14px;
-            line-height: 1.6;
+            font-weight: 300;
+            margin-top: 3px;
         }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .btn-ta {
+            background: linear-gradient(135deg, var(--violet), #8b5ccc);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 12px rgba(107,63,160,0.35);
+        }
+        .btn-ta:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(107,63,160,0.45); }
+        .btn-reset {
+            background: transparent;
+            color: var(--mid-grey);
+            border: 1.5px solid var(--light-border);
+            padding: 8px 14px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-reset:hover { border-color: #c0392b; color: #c0392b; background: #fef2f2; }
+
+        .instructions {
+            background: linear-gradient(to right, #fffbeb, #fef9f0);
+            padding: 14px 18px;
+            border-radius: 10px;
+            border-left: 3px solid var(--amber);
+            margin: 16px 0;
+        }
+        .instructions p { color: #78350f; font-size: 13.5px; line-height: 1.65; }
+        .instructions strong { color: var(--amber); }
+
         .progress-bar {
-            background: #e0e0e0;
-            height: 10px;
-            border-radius: 5px;
-            margin-top: 15px;
+            background: #ede9e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 18px;
             overflow: hidden;
         }
         .progress-fill {
-            background: linear-gradient(90deg, #1e40af, #7c3aed);
+            background: linear-gradient(90deg, var(--indigo), var(--violet));
             height: 100%;
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.4s ease;
         }
+
         .stats {
             display: flex;
-            gap: 20px;
+            gap: 0;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 16px;
             flex-wrap: wrap;
+            background: var(--cream);
+            border-radius: 10px;
+            padding: 4px 0;
+            border: 1px solid var(--light-border);
         }
         .stat {
             text-align: center;
+            padding: 10px 22px;
+            border-right: 1px solid var(--light-border);
+            flex: 1;
+            min-width: 90px;
         }
-        .stat-label {
-            color: #666;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }
-        .stat-value {
-            color: #1e40af;
-            font-size: 24px;
-            font-weight: bold;
-        }
+        .stat:last-child { border-right: none; }
+        .stat-label { color: var(--mid-grey); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-value { color: var(--navy); font-size: 20px; font-weight: 600; font-family: 'DM Mono', monospace; }
+
+        /* ─── QUESTION CARD ─── */
         .question-card {
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: var(--warm-white);
+            padding: 36px;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
             margin-bottom: 20px;
+            border: 1px solid var(--light-border);
         }
         .question-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #f0f0f0;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #f0ece4;
         }
         .question-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #1e40af;
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--navy);
         }
         .fungus-hint {
-            background: #f0f9ff;
-            padding: 8px 16px;
+            background: var(--cream);
+            padding: 6px 14px;
             border-radius: 20px;
-            color: #1e40af;
-            font-size: 14px;
+            color: var(--indigo);
+            font-size: 12px;
             font-weight: 600;
+            border: 1px solid var(--light-border);
+            letter-spacing: 0.3px;
         }
+
         .observation-clues {
-            background: #f8f9fa;
-            padding: 25px;
+            background: #f4f6fb;
+            padding: 24px;
             border-radius: 12px;
-            margin-bottom: 30px;
-            border-left: 4px solid #1e40af;
+            margin-bottom: 28px;
+            border-left: 3px solid var(--indigo);
         }
         .observation-clues h3 {
-            color: #1e40af;
-            font-size: 18px;
-            margin-bottom: 15px;
+            color: var(--indigo);
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .clue-section {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(45,74,138,0.1);
         }
-        .clue-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
+        .clue-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .clue-label {
-            font-weight: bold;
-            color: #1e40af;
-            font-size: 14px;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--indigo);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 3px;
             display: block;
         }
-        .clue-text {
-            color: #333;
-            line-height: 1.7;
-            font-size: 15px;
-        }
+        .clue-text { color: #2c3e50; line-height: 1.65; font-size: 14.5px; }
+
+        /* ─── ANSWER SECTION ─── */
         .answer-section {
-            background: #fef3c7;
-            padding: 25px;
+            background: linear-gradient(to bottom right, #fffbeb, #fef7e4);
+            padding: 24px;
             border-radius: 12px;
             margin-bottom: 20px;
+            border: 1px solid #f0d98e;
         }
         .answer-section h3 {
             color: #92400e;
-            font-size: 18px;
-            margin-bottom: 15px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .input-group {
+            margin-bottom: 12px;
+        }
+        .input-label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #92400e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
         }
         .answer-input {
             width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            border: 3px solid #f59e0b;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
+            padding: 13px 16px;
+            font-size: 17px;
+            border: 2px solid #e8c96a;
+            border-radius: 9px;
+            font-family: 'DM Mono', monospace;
             font-style: italic;
-            transition: all 0.3s;
+            transition: all 0.25s;
+            background: white;
+            color: var(--navy);
         }
         .answer-input:focus {
             outline: none;
-            border-color: #1e40af;
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3px rgba(45, 74, 138, 0.12);
         }
-        .answer-hint {
-            margin-top: 10px;
-            color: #78350f;
-            font-size: 13px;
+        .answer-input:disabled { background: #f5f5f5; opacity: 0.7; }
+
+        .common-input {
+            font-size: 15px;
+            font-family: 'DM Sans', sans-serif;
+            font-style: normal;
+            border-color: #d4b860;
+        }
+        .input-hint {
+            margin-top: 5px;
+            color: #a86020;
+            font-size: 12px;
             font-style: italic;
         }
+
+        /* ─── SUBMIT / NEXT BUTTONS ─── */
         .submit-btn {
-            background: #1e40af;
+            background: linear-gradient(135deg, var(--indigo), #3d5fa8);
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 14px 40px;
             border-radius: 10px;
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.25s;
             display: block;
             margin: 0 auto;
-            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+            font-family: 'DM Sans', sans-serif;
+            box-shadow: 0 4px 16px rgba(45, 74, 138, 0.4);
+            letter-spacing: 0.2px;
         }
-        .submit-btn:hover {
-            background: #1e3a8a;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(45,74,138,0.5); }
+        .submit-btn:disabled { background: #b0bec5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .next-btn {
+            background: linear-gradient(135deg, var(--violet), #7c50b8);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: none;
+            margin: 20px auto 0;
+            font-family: 'DM Sans', sans-serif;
+            box-shadow: 0 4px 16px rgba(107, 63, 160, 0.4);
         }
-        .submit-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(107,63,160,0.5); }
+
+        /* ─── SCORE DISPLAY ─── */
         .score-display {
             display: none;
             background: white;
-            padding: 20px;
+            padding: 20px 24px;
             border-radius: 12px;
-            margin: 20px 0;
-            border-left: 5px solid #22c55e;
+            margin: 20px 0 0;
+            border-left: 5px solid var(--correct);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
         }
-        .score-display.show {
-            display: block;
-            animation: slideDown 0.3s ease;
+        .score-display.show { display: block; animation: slideDown 0.3s ease; }
+        .score-display.perfect { border-left-color: var(--correct); background: linear-gradient(to right, #f0fdf4, white); }
+        .score-display.good { border-left-color: var(--indigo); background: linear-gradient(to right, #eff6ff, white); }
+        .score-display.wrong { border-left-color: var(--error); background: linear-gradient(to right, #fef2f2, white); }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
         }
-        .score-display.perfect {
-            border-left-color: #22c55e;
-            background: linear-gradient(to right, #f0fdf4, white);
+        .score-block {
+            background: rgba(0,0,0,0.03);
+            border-radius: 8px;
+            padding: 10px 14px;
         }
-        .score-display.good {
-            border-left-color: #3b82f6;
-            background: linear-gradient(to right, #eff6ff, white);
-        }
-        .score-display.wrong {
-            border-left-color: #ef4444;
-            background: linear-gradient(to right, #fef2f2, white);
+        .score-block-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--mid-grey);
+            font-weight: 600;
+            margin-bottom: 3px;
         }
         .score-number {
-            font-size: 36px;
-            font-weight: bold;
-            color: #1e40af;
-            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--navy);
+            font-family: 'DM Mono', monospace;
+            line-height: 1;
         }
-        .score-feedback {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 15px;
-        }
+        .score-number.perfect-color { color: var(--correct); }
+        .score-number.good-color { color: var(--indigo); }
+        .score-number.wrong-color { color: var(--error); }
+        .score-feedback { font-size: 15px; color: #444; margin-bottom: 12px; font-weight: 500; }
+        .common-feedback { font-size: 13px; color: #666; font-style: italic; margin-top: 4px; }
+
         .correct-answer {
-            background: #f0f9ff;
-            padding: 15px;
+            background: #f0f7ff;
+            padding: 14px 16px;
             border-radius: 8px;
             margin-top: 10px;
+            border: 1px solid #cde0f8;
         }
-        .correct-answer-label {
-            font-size: 13px;
-            color: #1e40af;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
+        .correct-answer-label { font-size: 11px; color: var(--indigo); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
         .correct-answer-text {
-            font-size: 22px;
-            font-weight: bold;
-            color: #1e40af;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy);
+            font-family: 'Playfair Display', serif;
             font-style: italic;
         }
-        .correct-answer-common {
-            color: #666;
-            font-size: 16px;
-            margin-top: 5px;
-        }
-        .next-btn {
-            background: #7c3aed;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: none;
-            margin: 20px auto 0;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-        }
-        .next-btn:hover {
-            background: #6d28d9;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
-        }
+        .correct-answer-common { color: #556; font-size: 14px; margin-top: 4px; }
+
+        /* ─── READING PANE ─── */
         .reading-pane {
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: var(--warm-white);
+            padding: 36px;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             margin-bottom: 20px;
             display: none;
+            border: 1px solid var(--light-border);
         }
-        .reading-pane.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
+        .reading-pane.show { display: block; animation: slideDown 0.35s ease; }
         .reading-pane h2 {
-            color: #1e40af;
-            font-size: 26px;
-            margin-bottom: 25px;
+            font-family: 'Playfair Display', serif;
+            color: var(--navy);
+            font-size: 22px;
+            margin-bottom: 24px;
             text-align: center;
-            border-bottom: 3px solid #f0f0f0;
-            padding-bottom: 15px;
+            border-bottom: 2px solid #f0ece4;
+            padding-bottom: 14px;
         }
         .reading-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: #f8f9fa;
+            margin-bottom: 20px;
+            padding: 18px 20px;
+            background: #f7f5f0;
             border-radius: 10px;
-            border-left: 4px solid #7c3aed;
+            border-left: 3px solid var(--violet);
         }
         .reading-section h3 {
-            color: #7c3aed;
-            font-size: 18px;
-            margin-bottom: 12px;
+            color: var(--violet);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
         }
-        .reading-section p {
-            color: #333;
-            line-height: 1.8;
-            font-size: 15px;
-        }
-        .differentiators {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .reading-section p { color: #2c3e50; line-height: 1.8; font-size: 14.5px; }
+        .differentiators { display: flex; flex-direction: column; gap: 10px; }
         .differentiator-item {
             background: white;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border-left: 3px solid #3b82f6;
-            font-size: 14px;
+            padding: 10px 14px;
+            border-radius: 7px;
+            border-left: 2px solid var(--indigo);
+            font-size: 13.5px;
             line-height: 1.6;
+            color: #2c3e50;
         }
         .unique-features {
-            background: #dcfce7;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 3px solid #22c55e;
-            font-size: 14px;
+            background: #e8f8ee;
+            padding: 12px 14px;
+            border-radius: 7px;
+            border-left: 2px solid var(--correct);
+            font-size: 13.5px;
             line-height: 1.6;
-            margin-top: 5px;
+            margin-top: 4px;
+            color: #1a4a30;
         }
+
+        /* ─── TEACHING ASSISTANT MODAL ─── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 15, 35, 0.88);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+        
+        .ta-modal {
+            background: var(--warm-white);
+            border-radius: 20px;
+            max-width: 680px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            border: 1px solid var(--light-border);
+            position: relative;
+        }
+        .ta-modal-header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--violet) 100%);
+            padding: 32px 36px 28px;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+        .ta-modal-header .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .ta-modal-header .close-btn:hover { background: rgba(255,255,255,0.3); }
+        .ta-modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+        .ta-modal-header p { color: rgba(255,255,255,0.72); font-size: 14px; line-height: 1.6; }
+        .ta-modal-header .ta-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.9);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .ta-modal-body { padding: 30px 36px; }
+
+        .ta-persona-box {
+            background: linear-gradient(135deg, #f5f0ff, #ede8fb);
+            border: 1px solid #c9b8f0;
+            border-radius: 12px;
+            padding: 20px 22px;
+            margin-bottom: 24px;
+        }
+        .ta-persona-box h3 {
+            color: var(--violet);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .ta-persona-box p { color: #4a3a6b; font-size: 14px; line-height: 1.7; }
+        .ta-persona-box .placeholder-note {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            font-size: 12.5px;
+            color: #6b5a8a;
+            font-style: italic;
+            border-left: 2px solid var(--violet);
+        }
+
+        .ta-lessons h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--navy);
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: 1px solid var(--light-border);
+            margin-bottom: 10px;
+            background: white;
+            transition: all 0.2s;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .lesson-item.available {
+            opacity: 1;
+            cursor: pointer;
+            background: linear-gradient(to right, white, #f9f7ff);
+            border-color: #c9b8f0;
+        }
+        .lesson-item.available:hover {
+            transform: translateX(4px);
+            border-color: var(--violet);
+            box-shadow: 0 3px 12px rgba(107,63,160,0.12);
+        }
+        .lesson-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--cream);
+            border: 2px solid var(--light-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--mid-grey);
+            flex-shrink: 0;
+        }
+        .lesson-item.available .lesson-num {
+            background: linear-gradient(135deg, var(--violet), #8b5ccc);
+            border-color: var(--violet);
+            color: white;
+        }
+        .lesson-info .lesson-title { font-weight: 600; color: var(--navy); font-size: 14.5px; }
+        .lesson-info .lesson-desc { font-size: 12.5px; color: var(--mid-grey); margin-top: 2px; }
+        .lesson-lock { margin-left: auto; color: var(--mid-grey); font-size: 15px; }
+        .lesson-item.available .lesson-lock { color: var(--violet); }
+
+        .ta-coming-soon {
+            text-align: center;
+            padding: 24px 20px;
+            background: var(--cream);
+            border-radius: 12px;
+            margin-top: 24px;
+            border: 1px dashed #c0b89a;
+        }
+        .ta-coming-soon p { color: var(--mid-grey); font-size: 13px; line-height: 1.7; }
+        .ta-coming-soon strong { color: var(--navy); }
+
+        /* ─── RESET CONFIRM MODAL ─── */
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10,15,35,0.75);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .confirm-overlay.open { display: flex; animation: fadeIn 0.15s ease; }
+        .confirm-box {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 36px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+        }
+        .confirm-box h3 { font-family: 'Playfair Display', serif; color: var(--navy); font-size: 20px; margin-bottom: 10px; }
+        .confirm-box p { color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+        .confirm-buttons { display: flex; gap: 12px; justify-content: center; }
+        .btn-cancel { background: #f0f0f0; color: #555; border: none; padding: 11px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+        .btn-cancel:hover { background: #e0e0e0; }
+        .btn-confirm-reset { background: #c0392b; color: white; border: none; padding: 11px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+        .btn-confirm-reset:hover { background: #a93226; }
+
+        /* ─── UTILS ─── */
         .loading {
             text-align: center;
-            padding: 60px;
+            padding: 80px 20px;
             color: white;
-            font-size: 20px;
+            font-size: 18px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
         }
         .error {
             background: #fef2f2;
             border: 2px solid #ef4444;
             color: #991b1b;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 24px;
+            border-radius: 12px;
             text-align: center;
         }
+
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 24px;
-            }
-            .question-card, .reading-pane {
-                padding: 20px;
-            }
-            .stats {
-                gap: 15px;
-            }
-            .stat-value {
-                font-size: 20px;
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 640px) {
+            .header, .question-card, .reading-pane { padding: 20px; }
+            .header-top { flex-direction: column; }
+            .header-actions { width: 100%; }
+            .btn-ta, .btn-reset { flex: 1; justify-content: center; }
+            .score-grid { grid-template-columns: 1fr; }
+            .stats .stat { padding: 10px 14px; }
+            .stat-value { font-size: 17px; }
+            .ta-modal-header, .ta-modal-body { padding: 20px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="loading" id="loadingMsg">🍄 Loading fungi database...</div>
-        
-        <div class="header" style="display: none;" id="headerSection">
-            <h1>🍄 Fungi Spelling Trainer</h1>
-            <div class="subtitle">Professional Tree Inspection Certification Tool</div>
-            
-            <div class="instructions">
-                <h3>📋 How to Use This Trainer</h3>
-                <p>Based on the field observations (roots, butt, stem, branches, foliage), identify the fungus and type its full Latin binomial name. Scoring: Perfect spelling = 10 points, Minor typos = 8 points, Genus only = 4 points. After answering, review detailed identification notes to reinforce learning.</p>
+<div class="container">
+    <div class="loading" id="loadingMsg">🍄 Loading fungi database...</div>
+
+    <!-- HEADER -->
+    <div class="header" style="display:none;" id="headerSection">
+        <div class="header-top">
+            <div class="header-title-block">
+                <h1>🍄 Fungi Spelling Trainer</h1>
+                <div class="subtitle">Professional Tree Inspection Certification Tool</div>
             </div>
-            
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-label">Progress</div>
-                    <div class="stat-value" id="attempted">0 / 0</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Average Score</div>
-                    <div class="stat-value" id="avgScore">-</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-label">Perfect Answers</div>
-                    <div class="stat-value" id="perfectCount">0</div>
-                </div>
+            <div class="header-actions">
+                <button class="btn-ta" onclick="openTA()">🎓 Teaching Assistant</button>
+                <button class="btn-reset" onclick="openResetConfirm()">↺ Reset Stats</button>
             </div>
         </div>
-        
-        <div class="question-card" style="display: none;" id="questionCard">
-            <div class="question-header">
-                <div class="question-number" id="questionNum">Question 1</div>
-                <div class="fungus-hint">🔬 Field Observations</div>
-            </div>
-            
-            <div class="observation-clues">
-                <h3>🌳 Tree Assessment Observations</h3>
-                <div class="clue-section" id="clueRoots"></div>
-                <div class="clue-section" id="clueButt"></div>
-                <div class="clue-section" id="clueLowerStem"></div>
-                <div class="clue-section" id="clueUpperStem"></div>
-                <div class="clue-section" id="clueBranches"></div>
-                <div class="clue-section" id="clueFoliage"></div>
-            </div>
-            
-            <div class="answer-section">
-                <h3>✍️ Your Diagnosis</h3>
-                <input 
-                    type="text" 
-                    class="answer-input" 
-                    id="answerInput" 
-                    placeholder="Type the full Latin binomial name (e.g., Armillaria mellea)"
-                    autocomplete="off"
-                    spellcheck="false"
-                >
-                <div class="answer-hint">💡 Type carefully - spelling matters for certification!</div>
-            </div>
-            
-            <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">
-                Check Answer
-            </button>
-            
-            <div class="score-display" id="scoreDisplay">
-                <div class="score-number" id="scoreNum">0/10</div>
-                <div class="score-feedback" id="scoreFeedback"></div>
-                <div class="correct-answer">
-                    <div class="correct-answer-label">Correct Answer:</div>
-                    <div class="correct-answer-text" id="correctLatin"></div>
-                    <div class="correct-answer-common" id="correctCommon"></div>
-                </div>
-            </div>
-            
-            <button class="next-btn" id="nextBtn" onclick="nextQuestion()">
-                Next Fungus →
-            </button>
+
+        <div class="instructions">
+            <p>Read the field observations (roots → foliage), identify the fungus and type its <strong>full Latin binomial name</strong>. Optionally type the <strong>common name</strong> for bonus points. Scoring: Perfect Latin = 10pts · Minor typos = 8pts · Genus only = 4pts · Common name = +5 bonus.</p>
         </div>
-        
-        <div class="reading-pane" id="readingPane">
-            <h2>📚 Detailed Identification Notes</h2>
-            
-            <div class="reading-section">
-                <h3>🎯 Why This Fungus?</h3>
-                <p id="whyThisFungus"></p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">Progress</div>
+                <div class="stat-value" id="attempted">0 / 0</div>
             </div>
-            
-            <div class="reading-section">
-                <h3>🔍 Key Differentiators</h3>
-                <div class="differentiators" id="differentiators"></div>
+            <div class="stat">
+                <div class="stat-label">Avg Score</div>
+                <div class="stat-value" id="avgScore">—</div>
             </div>
-            
-            <div class="reading-section">
-                <h3>⚕️ Clinical Notes</h3>
-                <p id="clinicalNotes"></p>
+            <div class="stat">
+                <div class="stat-label">Perfects</div>
+                <div class="stat-value" id="perfectCount">0</div>
             </div>
-            
-            <div class="reading-section">
-                <h3>📝 Exam Tips</h3>
-                <p id="examTip"></p>
+            <div class="stat">
+                <div class="stat-label">Common Bonus</div>
+                <div class="stat-value" id="commonBonus">0</div>
             </div>
         </div>
     </div>
+
+    <!-- QUESTION CARD -->
+    <div class="question-card" style="display:none;" id="questionCard">
+        <div class="question-header">
+            <div class="question-number" id="questionNum">Question 1</div>
+            <div class="fungus-hint">🔬 Field Observations</div>
+        </div>
+
+        <div class="observation-clues">
+            <h3>🌳 Tree Assessment Observations</h3>
+            <div class="clue-section" id="clueRoots"></div>
+            <div class="clue-section" id="clueButt"></div>
+            <div class="clue-section" id="clueLowerStem"></div>
+            <div class="clue-section" id="clueUpperStem"></div>
+            <div class="clue-section" id="clueBranches"></div>
+            <div class="clue-section" id="clueFoliage"></div>
+        </div>
+
+        <div class="answer-section">
+            <h3>✍️ Your Diagnosis</h3>
+            
+            <div class="input-group">
+                <label class="input-label" for="answerInput">Latin Binomial Name *</label>
+                <input
+                    type="text"
+                    class="answer-input"
+                    id="answerInput"
+                    placeholder="e.g., Armillaria mellea"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <div class="input-hint">💡 Spelling matters for certification — up to 10 points</div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label" for="commonInput">Common Name (optional bonus)</label>
+                <input
+                    type="text"
+                    class="answer-input common-input"
+                    id="commonInput"
+                    placeholder="e.g., Honey Fungus"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <div class="input-hint">🌟 Bonus +5 points for correct common name</div>
+            </div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">Check Answer</button>
+
+        <div class="score-display" id="scoreDisplay">
+            <div class="score-grid">
+                <div class="score-block">
+                    <div class="score-block-label">Latin Name Score</div>
+                    <div class="score-number" id="scoreNum">0/10</div>
+                </div>
+                <div class="score-block">
+                    <div class="score-block-label">Common Name</div>
+                    <div class="score-number" id="commonScoreNum">—</div>
+                </div>
+            </div>
+            <div class="score-feedback" id="scoreFeedback"></div>
+            <div class="common-feedback" id="commonFeedback"></div>
+            <div class="correct-answer">
+                <div class="correct-answer-label">Correct Answer</div>
+                <div class="correct-answer-text" id="correctLatin"></div>
+                <div class="correct-answer-common" id="correctCommon"></div>
+            </div>
+        </div>
+
+        <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Fungus →</button>
+    </div>
+
+    <!-- READING PANE -->
+    <div class="reading-pane" id="readingPane">
+        <h2>📚 Detailed Identification Notes</h2>
+        <div class="reading-section">
+            <h3>🎯 Why This Fungus?</h3>
+            <p id="whyThisFungus"></p>
+        </div>
+        <div class="reading-section">
+            <h3>🔍 Key Differentiators</h3>
+            <div class="differentiators" id="differentiators"></div>
+        </div>
+        <div class="reading-section">
+            <h3>⚕️ Clinical Notes</h3>
+            <p id="clinicalNotes"></p>
+        </div>
+        <div class="reading-section">
+            <h3>📝 Exam Tips</h3>
+            <p id="examTip"></p>
+        </div>
+    </div>
+</div>
+
+<!-- TEACHING ASSISTANT MODAL -->
+<div class="modal-overlay" id="taModal">
+    <div class="ta-modal">
+        <div class="ta-modal-header">
+            <button class="close-btn" onclick="closeTA()">✕</button>
+            <div class="ta-badge">Framework Preview</div>
+            <h2>🎓 Teaching Assistant</h2>
+            <p>A structured learning companion for the Fungi module — built around a proven teaching persona to guide you from recognition to confident field identification.</p>
+        </div>
+        <div class="ta-modal-body">
+
+            <div class="ta-persona-box">
+                <h3>👤 Teaching Persona</h3>
+                <p>The Teaching Assistant will be powered by a selected chat persona — a Claude session that proved most effective at explaining fungal ID in a natural, memorable way. This persona will become the consistent voice throughout all lessons.</p>
+                <div class="placeholder-note">
+                    📌 <strong>Action required:</strong> Select the most successful Claude teaching chat and attach it here as a standalone document (alongside the TSV data file). The persona will then be integrated as the TA's voice and style.
+                </div>
+            </div>
+
+            <div class="ta-lessons">
+                <h3>Lesson Framework</h3>
+
+                <div class="lesson-item available">
+                    <div class="lesson-num">1</div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Recognition Fundamentals</div>
+                        <div class="lesson-desc">Visual cues, bracket morphology, and first-pass identification</div>
+                    </div>
+                    <div class="lesson-lock">→</div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-num">2</div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Root & Butt Pathogens</div>
+                        <div class="lesson-desc">Armillaria, Ganoderma, Meripilus — root decay patterns</div>
+                    </div>
+                    <div class="lesson-lock">🔒</div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-num">3</div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Stem & Branch Colonisers</div>
+                        <div class="lesson-desc">Fomes, Inonotus, Phellinus — heartwood and wound pathogens</div>
+                    </div>
+                    <div class="lesson-lock">🔒</div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-num">4</div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Saprophytes vs Pathogens</div>
+                        <div class="lesson-desc">Risk communication — when to worry and when not to</div>
+                    </div>
+                    <div class="lesson-lock">🔒</div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-num">5</div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Latin Name Mastery</div>
+                        <div class="lesson-desc">Etymology, memory hooks, and spelling patterns for the exam</div>
+                    </div>
+                    <div class="lesson-lock">🔒</div>
+                </div>
+
+                <div class="lesson-item">
+                    <div class="lesson-num">6</div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Mock Assessment</div>
+                        <div class="lesson-desc">Full PTI-style scenario walkthrough with the TA</div>
+                    </div>
+                    <div class="lesson-lock">🔒</div>
+                </div>
+            </div>
+
+            <div class="ta-coming-soon">
+                <p>
+                    <strong>This module is in development.</strong><br>
+                    Lesson 1 (Recognition Fundamentals) is the first to be built.<br>
+                    The framework is designed to receive the teaching persona as a document,<br>
+                    just like the TSV file drives the question bank.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- RESET CONFIRM MODAL -->
+<div class="confirm-overlay" id="confirmModal">
+    <div class="confirm-box">
+        <h3>Reset All Stats?</h3>
+        <p>This will clear your progress, scores, and all session data. You'll start fresh from Question 1.</p>
+        <div class="confirm-buttons">
+            <button class="btn-cancel" onclick="closeResetConfirm()">Cancel</button>
+            <button class="btn-confirm-reset" onclick="confirmReset()">Yes, Reset</button>
+        </div>
+    </div>
+</div>
 
 <script>
 let allFungi = [];
@@ -498,30 +915,28 @@ let currentIndex = 0;
 let userProgress = {
     attempted: [],
     scores: [],
-    perfectCount: 0
+    perfectCount: 0,
+    commonCorrect: 0
 };
 
-// Load progress from localStorage
+// Load saved progress
 const savedProgress = localStorage.getItem('fungiSpellingProgress');
 if (savedProgress) {
-    userProgress = JSON.parse(savedProgress);
+    try {
+        const parsed = JSON.parse(savedProgress);
+        userProgress = { commonCorrect: 0, ...parsed };
+    } catch(e) {}
 }
 
-// Load TSV data from /tsv/ folder
 async function loadFungiData() {
     try {
         const response = await fetch('./tsv/fungi_data.tsv');
-        
-        if (!response.ok) {
-            throw new Error(`Failed to load TSV file: ${response.status} ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`Failed to load TSV: ${response.status}`);
         
         const tsvText = await response.text();
         const lines = tsvText.trim().split('\n');
-        
-        // Skip header row
         const dataLines = lines.slice(1);
-        
+
         allFungi = dataLines.map(line => {
             const cols = line.split('\t').map(c => c.trim());
             return {
@@ -542,29 +957,20 @@ async function loadFungiData() {
                 imageRef: cols[14]
             };
         }).filter(f => f.active === 'YES');
-        
-        if (allFungi.length === 0) {
-            throw new Error('No active fungi found in TSV file');
-        }
-        
-        // Shuffle fungi for varied practice
+
+        if (allFungi.length === 0) throw new Error('No active fungi found');
+
         allFungi = shuffleArray(allFungi);
-        
-        // Hide loading, show interface
+
         document.getElementById('loadingMsg').style.display = 'none';
         document.getElementById('headerSection').style.display = 'block';
         document.getElementById('questionCard').style.display = 'block';
-        
+
         displayFungus(0);
         updateStats();
-        
     } catch (error) {
-        document.getElementById('loadingMsg').innerHTML = 
-            `<div class="error">
-                <h2>❌ Error Loading Fungi Database</h2>
-                <p style="margin-top: 10px;">${error.message}</p>
-                <p style="margin-top: 10px; font-size: 14px;">Make sure your TSV file is located at: <code>./tsv/fungi_data.tsv</code></p>
-            </div>`;
+        document.getElementById('loadingMsg').innerHTML =
+            `<div class="error"><h2>❌ Error Loading Fungi Database</h2><p>${error.message}</p><p style="margin-top:10px;font-size:13px;">Make sure the TSV file is at: <code>./tsv/fungi_data.tsv</code></p></div>`;
     }
 }
 
@@ -580,140 +986,128 @@ function shuffleArray(array) {
 function displayFungus(index) {
     currentIndex = index;
     const fungus = allFungi[index];
-    
+
     document.getElementById('questionNum').textContent = `Question ${index + 1} of ${allFungi.length}`;
-    
-    // Display clues
-    document.getElementById('clueRoots').innerHTML = 
-        `<span class="clue-label">🌱 Roots:</span><div class="clue-text">${fungus.clueRoots}</div>`;
-    document.getElementById('clueButt').innerHTML = 
-        `<span class="clue-label">🪵 Butt:</span><div class="clue-text">${fungus.clueButt}</div>`;
-    document.getElementById('clueLowerStem').innerHTML = 
-        `<span class="clue-label">📏 Lower Stem:</span><div class="clue-text">${fungus.clueLowerStem}</div>`;
-    document.getElementById('clueUpperStem').innerHTML = 
-        `<span class="clue-label">📐 Upper Stem:</span><div class="clue-text">${fungus.clueUpperStem}</div>`;
-    document.getElementById('clueBranches').innerHTML = 
-        `<span class="clue-label">🌿 Branches:</span><div class="clue-text">${fungus.clueBranches}</div>`;
-    document.getElementById('clueFoliage').innerHTML = 
-        `<span class="clue-label">🍃 Foliage:</span><div class="clue-text">${fungus.clueFoliage}</div>`;
-    
-    // Reset input and displays
+
+    document.getElementById('clueRoots').innerHTML =
+        `<span class="clue-label">🌱 Roots</span><div class="clue-text">${fungus.clueRoots}</div>`;
+    document.getElementById('clueButt').innerHTML =
+        `<span class="clue-label">🪵 Butt</span><div class="clue-text">${fungus.clueButt}</div>`;
+    document.getElementById('clueLowerStem').innerHTML =
+        `<span class="clue-label">📏 Lower Stem</span><div class="clue-text">${fungus.clueLowerStem}</div>`;
+    document.getElementById('clueUpperStem').innerHTML =
+        `<span class="clue-label">📐 Upper Stem</span><div class="clue-text">${fungus.clueUpperStem}</div>`;
+    document.getElementById('clueBranches').innerHTML =
+        `<span class="clue-label">🌿 Branches</span><div class="clue-text">${fungus.clueBranches}</div>`;
+    document.getElementById('clueFoliage').innerHTML =
+        `<span class="clue-label">🍃 Foliage</span><div class="clue-text">${fungus.clueFoliage}</div>`;
+
     document.getElementById('answerInput').value = '';
+    document.getElementById('commonInput').value = '';
     document.getElementById('answerInput').disabled = false;
+    document.getElementById('commonInput').disabled = false;
     document.getElementById('submitBtn').style.display = 'block';
     document.getElementById('submitBtn').disabled = false;
     document.getElementById('scoreDisplay').classList.remove('show', 'perfect', 'good', 'wrong');
     document.getElementById('readingPane').classList.remove('show');
     document.getElementById('nextBtn').style.display = 'none';
-    
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function levenshteinDistance(str1, str2) {
-    const m = str1.length;
-    const n = str2.length;
-    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
-    
-    for (let i = 0; i <= m; i++) dp[i][0] = i;
-    for (let j = 0; j <= n; j++) dp[0][j] = j;
-    
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1];
-            } else {
-                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
-            }
-        }
-    }
-    
+function levenshteinDistance(s1, s2) {
+    const m = s1.length, n = s2.length;
+    const dp = Array.from({length: m+1}, (_, i) => Array.from({length: n+1}, (_, j) => i === 0 ? j : j === 0 ? i : 0));
+    for (let i = 1; i <= m; i++)
+        for (let j = 1; j <= n; j++)
+            dp[i][j] = s1[i-1] === s2[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
     return dp[m][n];
 }
 
 function checkAnswer() {
     const fungus = allFungi[currentIndex];
     const userInput = document.getElementById('answerInput').value.trim();
+    const commonInput = document.getElementById('commonInput').value.trim();
+
+    if (!userInput) { alert('Please type the Latin name first!'); return; }
+
+    // ── Latin name scoring ──
     const correctAnswer = fungus.latinName.toLowerCase();
     const userAnswer = userInput.toLowerCase();
-    
-    if (!userInput) {
-        alert('Please type an answer first!');
-        return;
-    }
-    
     const [correctGenus, correctSpecies] = correctAnswer.split(' ');
     const parts = userAnswer.split(' ');
     const userGenus = parts[0] || '';
     const userSpecies = parts[1] || '';
-    
+
     let score = 0;
     let feedback = '';
     let scoreClass = 'wrong';
-    
-    // Perfect match
+    let scoreColorClass = 'wrong-color';
+
     if (userAnswer === correctAnswer) {
-        score = 10;
-        feedback = '🎉 Perfect! Excellent spelling!';
-        scoreClass = 'perfect';
+        score = 10; feedback = '🎉 Perfect spelling!';
+        scoreClass = 'perfect'; scoreColorClass = 'perfect-color';
         userProgress.perfectCount++;
+    } else if (userGenus && userSpecies) {
+        const genDist = levenshteinDistance(userGenus, correctGenus);
+        const spDist = levenshteinDistance(userSpecies, correctSpecies);
+        const total = genDist + spDist;
+        if (total <= 2) { score = 8; feedback = '👍 Nearly perfect — minor spelling error'; scoreClass = 'good'; scoreColorClass = 'good-color'; }
+        else if (userGenus === correctGenus && userSpecies !== correctSpecies) { score = 5; feedback = '✓ Genus correct, species incorrect'; scoreClass = 'good'; scoreColorClass = 'good-color'; }
+        else if (total <= 4) { score = 3; feedback = '📝 Close — check spelling carefully'; scoreClass = 'good'; scoreColorClass = 'good-color'; }
+    } else if (!userSpecies && userGenus === correctGenus) {
+        score = 4; feedback = '⚠️ Genus correct — need species name too'; scoreClass = 'good'; scoreColorClass = 'good-color';
     }
-    // Minor typos (1-2 characters off)
-    else if (userGenus && userSpecies) {
-        const genusDistance = levenshteinDistance(userGenus, correctGenus);
-        const speciesDistance = levenshteinDistance(userSpecies, correctSpecies);
-        const totalDistance = genusDistance + speciesDistance;
-        
-        if (totalDistance <= 2) {
-            score = 8;
-            feedback = '👍 Nearly perfect - minor spelling error';
-            scoreClass = 'good';
-        } else if (userGenus === correctGenus && userSpecies !== correctSpecies) {
-            score = 5;
-            feedback = '✓ Genus correct, species incorrect';
-            scoreClass = 'good';
-        } else if (totalDistance <= 4) {
-            score = 3;
-            feedback = '📝 Close - check spelling carefully';
-            scoreClass = 'good';
+
+    if (score === 0) feedback = '❌ Incorrect — review the clues';
+
+    // ── Common name scoring ──
+    let commonScore = 0;
+    let commonFeedbackText = '';
+    if (commonInput) {
+        const userCommon = commonInput.toLowerCase().replace(/[^a-z\s]/g, '');
+        const correctCommon = fungus.commonName.toLowerCase().replace(/[^a-z\s]/g, '');
+        const dist = levenshteinDistance(userCommon, correctCommon);
+        if (dist === 0) {
+            commonScore = 5; commonFeedbackText = `🌟 Common name correct! +5 bonus`;
+            userProgress.commonCorrect++;
+        } else if (dist <= 3) {
+            commonScore = 3; commonFeedbackText = `✓ Common name close — +3 bonus`;
+            userProgress.commonCorrect++;
+        } else {
+            commonFeedbackText = `Common name: "${fungus.commonName}"`;
         }
+    } else {
+        commonFeedbackText = `Common name: "${fungus.commonName}"`;
     }
-    // Genus only
-    else if (!userSpecies && userGenus === correctGenus) {
-        score = 4;
-        feedback = '⚠️ Genus correct - need species name too';
-        scoreClass = 'good';
-    }
-    
-    // No score earned
-    if (score === 0) {
-        feedback = '❌ Incorrect - review the clues';
-    }
-    
-    // Display score
+
+    // ── Display ──
     document.getElementById('scoreNum').textContent = `${score}/10`;
+    document.getElementById('scoreNum').className = `score-number ${scoreColorClass}`;
+    document.getElementById('commonScoreNum').textContent = commonScore > 0 ? `+${commonScore}` : '—';
+    document.getElementById('commonScoreNum').className = `score-number ${commonScore > 0 ? 'perfect-color' : ''}`;
     document.getElementById('scoreFeedback').textContent = feedback;
+    document.getElementById('commonFeedback').textContent = commonFeedbackText;
     document.getElementById('correctLatin').textContent = fungus.latinName;
-    document.getElementById('correctCommon').textContent = `(${fungus.commonName})`;
-    
+    document.getElementById('correctCommon').textContent = `Common name: ${fungus.commonName}`;
+
     const scoreDisplay = document.getElementById('scoreDisplay');
     scoreDisplay.classList.remove('perfect', 'good', 'wrong');
     scoreDisplay.classList.add('show', scoreClass);
-    
-    // Display reading pane
+
     displayReadingPane(fungus);
-    
-    // Save progress
+
     if (!userProgress.attempted.includes(currentIndex)) {
         userProgress.attempted.push(currentIndex);
     }
     userProgress.scores.push(score);
     localStorage.setItem('fungiSpellingProgress', JSON.stringify(userProgress));
-    
-    // Disable input and show next button
+
     document.getElementById('answerInput').disabled = true;
+    document.getElementById('commonInput').disabled = true;
     document.getElementById('submitBtn').style.display = 'none';
     document.getElementById('nextBtn').style.display = 'block';
-    
+
     updateStats();
 }
 
@@ -721,30 +1115,20 @@ function displayReadingPane(fungus) {
     document.getElementById('whyThisFungus').textContent = fungus.whyThis;
     document.getElementById('clinicalNotes').textContent = fungus.clinical;
     document.getElementById('examTip').textContent = fungus.examTip;
-    
-    // Parse differentiators
+
     const diffContainer = document.getElementById('differentiators');
     const diffParts = fungus.differentiators.split('. UNIQUE TO');
-    
-    // Split on pattern: ". " followed by UPPERCASE WORD followed by ":"
-    // This splits "GANODERMA: text. MERIPILUS: text" correctly
     const comparisons = diffParts[0].split(/\.\s+(?=[A-Z\s]+:)/).filter(s => s.trim());
     const unique = diffParts[1] || '';
-    
+
     let html = '';
     comparisons.forEach(comp => {
         const trimmed = comp.trim();
-        if (trimmed && trimmed.length > 0) {
-            html += `<div class="differentiator-item">${trimmed}</div>`;
-        }
+        if (trimmed) html += `<div class="differentiator-item">${trimmed}</div>`;
     });
-    
-    if (unique) {
-        html += `<div class="unique-features"><strong>✅ UNIQUE TO ${fungus.latinName.split(' ')[0].toUpperCase()}:</strong>${unique}</div>`;
-    }
-    
+    if (unique) html += `<div class="unique-features"><strong>✅ UNIQUE TO ${fungus.latinName.split(' ')[0].toUpperCase()}:</strong> ${unique}</div>`;
+
     diffContainer.innerHTML = html;
-    
     document.getElementById('readingPane').classList.add('show');
 }
 
@@ -752,42 +1136,79 @@ function nextQuestion() {
     if (currentIndex < allFungi.length - 1) {
         displayFungus(currentIndex + 1);
     } else {
-        // Completed all fungi
-        alert(`🎉 Completed all ${allFungi.length} fungi!\n\nAverage Score: ${calculateAverage().toFixed(1)}/10\nPerfect Answers: ${userProgress.perfectCount}\n\nRefresh page to practice again!`);
+        alert(`🎉 Completed all ${allFungi.length} fungi!\n\nAverage Score: ${calculateAverage().toFixed(1)}/10\nPerfect Answers: ${userProgress.perfectCount}\nCommon Names Correct: ${userProgress.commonCorrect}\n\nRefresh to practice again!`);
     }
 }
 
 function updateStats() {
     const attempted = userProgress.attempted.length;
     const total = allFungi.length;
-    const avgScore = calculateAverage();
-    
-    document.getElementById('attempted').textContent = `${attempted} / ${total}`;
-    document.getElementById('avgScore').textContent = attempted > 0 ? `${avgScore.toFixed(1)}/10` : '-';
+    const avg = calculateAverage();
+
+    document.getElementById('attempted').textContent = `${attempted}/${total}`;
+    document.getElementById('avgScore').textContent = attempted > 0 ? `${avg.toFixed(1)}` : '—';
     document.getElementById('perfectCount').textContent = userProgress.perfectCount;
-    
-    const progress = (attempted / total) * 100;
-    document.getElementById('progressFill').style.width = `${progress}%`;
+    document.getElementById('commonBonus').textContent = userProgress.commonCorrect || 0;
+
+    document.getElementById('progressFill').style.width = `${(attempted / total) * 100}%`;
 }
 
 function calculateAverage() {
-    if (userProgress.scores.length === 0) return 0;
-    const sum = userProgress.scores.reduce((a, b) => a + b, 0);
-    return sum / userProgress.scores.length;
+    if (!userProgress.scores.length) return 0;
+    return userProgress.scores.reduce((a, b) => a + b, 0) / userProgress.scores.length;
 }
 
-// Allow Enter key to submit
+// ── Teaching Assistant ──
+function openTA() {
+    document.getElementById('taModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeTA() {
+    document.getElementById('taModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// ── Reset Stats ──
+function openResetConfirm() {
+    document.getElementById('confirmModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeResetConfirm() {
+    document.getElementById('confirmModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+function confirmReset() {
+    userProgress = { attempted: [], scores: [], perfectCount: 0, commonCorrect: 0 };
+    localStorage.removeItem('fungiSpellingProgress');
+    closeResetConfirm();
+    allFungi = shuffleArray(allFungi);
+    displayFungus(0);
+    updateStats();
+    document.getElementById('scoreDisplay').classList.remove('show', 'perfect', 'good', 'wrong');
+    document.getElementById('readingPane').classList.remove('show');
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('submitBtn').style.display = 'block';
+}
+
+// ── Keyboard shortcuts ──
 document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('answerInput');
-    if (input) {
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !input.disabled) {
-                checkAnswer();
-            }
-        });
-    }
-    
-    // Load fungi data on page load
+    document.getElementById('answerInput')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const commonInput = document.getElementById('commonInput');
+            if (!commonInput.disabled) commonInput.focus();
+        }
+    });
+    document.getElementById('commonInput')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !document.getElementById('answerInput').disabled) checkAnswer();
+    });
+    document.getElementById('taModal')?.addEventListener('click', e => {
+        if (e.target === document.getElementById('taModal')) closeTA();
+    });
+    document.getElementById('confirmModal')?.addEventListener('click', e => {
+        if (e.target === document.getElementById('confirmModal')) closeResetConfirm();
+    });
+
     loadFungiData();
 });
 </script>
