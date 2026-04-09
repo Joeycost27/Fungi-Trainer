@@ -438,6 +438,96 @@
         }
 
         /* ─── TEACHING ASSISTANT MODAL ─── */
+        /* ─── VISUAL CLUES BUTTON ─── */
+        .btn-visual-clues {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: transparent; border: 1.5px solid var(--sage);
+            color: var(--sage); border-radius: 10px; padding: 7px 14px;
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            transition: all 0.18s ease; font-family: 'DM Sans', sans-serif;
+        }
+        .btn-visual-clues:hover { background: var(--sage); color: white; }
+        .btn-visual-clues.penalised { border-color: var(--amber); color: var(--amber); }
+        .btn-visual-clues.penalised:hover { background: var(--amber); color: white; }
+
+        /* ─── VISUAL CLUES MODAL ─── */
+        .vc-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(10,14,30,0.82); z-index: 900;
+            align-items: center; justify-content: center; padding: 16px;
+        }
+        .vc-overlay.open { display: flex; }
+        .vc-modal {
+            background: #12192e; border-radius: 18px; width: 100%;
+            max-width: 560px; max-height: 90vh; overflow-y: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .vc-header {
+            padding: 18px 22px 14px; border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .vc-title { color: #e8e4db; font-size: 15px; font-weight: 600; }
+        .vc-penalty-note { font-size: 11px; color: #c8860a; margin-top: 3px; }
+        .vc-close {
+            background: rgba(255,255,255,0.08); border: none; border-radius: 8px;
+            color: #e8e4db; width: 32px; height: 32px; cursor: pointer;
+            font-size: 16px; display: flex; align-items: center; justify-content: center;
+        }
+        .vc-close:hover { background: rgba(255,255,255,0.18); }
+
+        /* image carousel */
+        .vc-carousel { position: relative; background: #0a0e1a; min-height: 240px;
+            display: flex; align-items: center; justify-content: center; }
+        .vc-img { width: 100%; max-height: 320px; object-fit: contain; display: block; }
+        .vc-img-placeholder { color: rgba(255,255,255,0.25); font-size: 13px; text-align: center; padding: 60px 20px; }
+        .vc-nav { position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.55); border: none; border-radius: 8px;
+            color: white; font-size: 20px; width: 38px; height: 48px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .vc-nav:hover { background: rgba(0,0,0,0.8); }
+        .vc-nav.prev { left: 8px; }
+        .vc-nav.next { right: 8px; }
+        .vc-dots { display: flex; justify-content: center; gap: 6px; padding: 10px; }
+        .vc-dot { width: 7px; height: 7px; border-radius: 50%;
+            background: rgba(255,255,255,0.25); border: none; cursor: pointer; padding: 0; }
+        .vc-dot.active { background: var(--sage); }
+        .vc-img-label { text-align: center; font-size: 11px; color: rgba(255,255,255,0.35);
+            padding: 0 20px 8px; font-style: italic; }
+
+        /* clue cues */
+        .vc-cues-section { padding: 16px 20px 20px; }
+        .vc-cues-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em;
+            color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 10px; }
+        .vc-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .vc-chip {
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px; padding: 6px 14px; font-size: 13px; color: rgba(255,255,255,0.6);
+            cursor: pointer; transition: all 0.15s ease; font-family: 'DM Sans', sans-serif;
+        }
+        .vc-chip:hover { background: rgba(74,124,107,0.3); border-color: var(--sage); color: #e8e4db; }
+        .vc-chip.revealed { background: rgba(74,124,107,0.2); border-color: var(--sage);
+            color: #a8d4c2; cursor: default; }
+        .vc-chip-text { display: inline; }
+
+        /* post-answer image reveal strip */
+        .reveal-strip {
+            display: none; margin-top: 18px;
+            background: #0f1628; border-radius: 14px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .reveal-strip.show { display: block; }
+        .reveal-strip-header {
+            padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .reveal-strip-title { color: #e8e4db; font-size: 13px; font-weight: 500; }
+        .reveal-strip-sub { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+        .reveal-imgs { display: flex; gap: 2px; overflow-x: auto; padding: 2px; }
+        .reveal-imgs img { height: 110px; width: auto; object-fit: cover;
+            flex-shrink: 0; border-radius: 4px; }
+        .reveal-no-imgs { padding: 20px; text-align: center;
+            font-size: 12px; color: rgba(255,255,255,0.25); font-style: italic; }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -717,7 +807,9 @@
     <div class="question-card" style="display:none;" id="questionCard">
         <div class="question-header">
             <div class="question-number" id="questionNum">Question 1</div>
-            <div class="fungus-hint">🔬 Field Observations</div>
+            <button class="btn-visual-clues" id="vcBtn" onclick="openVisualClues()">
+                📷 Visual Clues
+            </button>
         </div>
 
         <div class="observation-clues">
@@ -782,6 +874,16 @@
             </div>
         </div>
 
+        <div class="reveal-strip" id="revealStrip">
+            <div class="reveal-strip-header">
+                <div>
+                    <div class="reveal-strip-title">📷 Visual Imprint</div>
+                    <div class="reveal-strip-sub">Lock in the visual — no penalty after answering</div>
+                </div>
+            </div>
+            <div class="reveal-imgs" id="revealImgs"></div>
+        </div>
+
         <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Fungus →</button>
     </div>
 
@@ -808,6 +910,31 @@
 </div>
 
 <!-- TEACHING ASSISTANT MODAL -->
+<!-- VISUAL CLUES MODAL -->
+<div class="vc-overlay" id="vcModal">
+    <div class="vc-modal">
+        <div class="vc-header">
+            <div>
+                <div class="vc-title" id="vcModalTitle">Visual Clues</div>
+                <div class="vc-penalty-note" id="vcPenaltyNote"></div>
+            </div>
+            <button class="vc-close" onclick="closeVisualClues()">✕</button>
+        </div>
+        <div class="vc-carousel" id="vcCarousel">
+            <div class="vc-img-placeholder" id="vcPlaceholder">Images will appear here once added to your repository</div>
+            <img class="vc-img" id="vcImg" style="display:none;" alt="Field observation">
+            <button class="vc-nav prev" id="vcPrev" onclick="carouselNav(-1)" style="display:none;">‹</button>
+            <button class="vc-nav next" id="vcNext" onclick="carouselNav(1)" style="display:none;">›</button>
+        </div>
+        <div class="vc-dots" id="vcDots"></div>
+        <div class="vc-img-label" id="vcImgLabel"></div>
+        <div class="vc-cues-section">
+            <div class="vc-cues-title">Clue Cues — tap to reveal</div>
+            <div class="vc-chips" id="vcChips"></div>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="taModal">
     <div class="ta-modal">
         <div class="ta-modal-header">
@@ -1011,6 +1138,11 @@ function displayFungus(index) {
     document.getElementById('scoreDisplay').classList.remove('show', 'perfect', 'good', 'wrong');
     document.getElementById('readingPane').classList.remove('show');
     document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('revealStrip').classList.remove('show');
+    document.getElementById('revealImgs').innerHTML = '';
+    document.getElementById('vcBtn').classList.remove('penalised');
+    viewedBeforeAnswer = false;
+    usedCueBeforeAnswer = false;
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1061,6 +1193,10 @@ function checkAnswer() {
 
     if (score === 0) feedback = '❌ Incorrect — review the clues';
 
+    // ── Penalty caps ──
+    if (usedCueBeforeAnswer && score > 5) { score = 5; feedback += ' (capped — clue cues used)'; }
+    else if (viewedBeforeAnswer && score > 7) { score = 7; feedback += ' (capped — images viewed)'; }
+
     // ── Common name scoring ──
     let commonScore = 0;
     let commonFeedbackText = '';
@@ -1096,6 +1232,7 @@ function checkAnswer() {
     scoreDisplay.classList.add('show', scoreClass);
 
     displayReadingPane(fungus);
+    showRevealStrip(fungus.latinName);
 
     if (!userProgress.attempted.includes(currentIndex)) {
         userProgress.attempted.push(currentIndex);
@@ -1156,6 +1293,180 @@ function updateStats() {
 function calculateAverage() {
     if (!userProgress.scores.length) return 0;
     return userProgress.scores.reduce((a, b) => a + b, 0) / userProgress.scores.length;
+}
+
+// ── Visual Clues ──
+const CLUE_CUES = {
+    'Armillaria mellea':         ['Black bootlaces in soil','White fans under bark','Mushroomy smell','Crown thins top-down'],
+    'Ganoderma australe':        ['Hoof bracket at base','Coffee-brown spore powder on ground','Hard and woody','Crown looks deceptively fine'],
+    'Ganoderma applanatum':      ['Flat shelf bracket','Scratch pore - turns brown','Grey-brown matte surface','Heavy spore deposits'],
+    'Ganoderma resinaceum':      ['Shiny lacquered surface','Feel it - varnished','Brown not matte like australe','Root collar location'],
+    'Kretzschmaria deusta':      ['Black crust on stem','Brittle snap - no fibres','Crown looks normal - danger','Grey stage same fungus'],
+    'Meripilus giganteus':       ['Giant rosette at base','Press fresh bracket - bruises black','Soft texture - annual','Old fibrous remains nearby'],
+    'Fomes fomentarius':         ['Grey hoof on beech stem','Not at base - on stem','Hard concentric grooves','Matte grey not brown'],
+    'Inonotus hispidus':         ['Hairy rough surface','Rust-brown colour','On ash wounds and stubs','Branch dieback above it'],
+    'Perenniporia fraxinea':     ['Pale buff on ash base','Small and easy to miss','Veteran ash trees','Perennial grooved surface'],
+    'Laetiporus sulphureus':     ['Bright sulphur yellow','Soft when fresh','Overlapping shelves','Unmistakable colour'],
+    'Fistulina hepatica':        ['Bleeds red juice when cut','Raw meat appearance','Chestnut or oak base','Slow - assess cavity size'],
+    'Phellinus igniarius':       ['Grey-black on willow stem','Hardest common bracket','Try to break a piece off','Rusty-brown inside'],
+    'Fomitopsis betulina':       ['Round brackets on birch','White pores underneath','Dead or dying tree only','Saprophyte - not pathogen'],
+    'Fomitopsis pinicola':       ['Red-brown margin on conifer','Grey-black old surface','Resinous appearance','Red belt is diagnostic'],
+    'Bjerkandera adusta':        ['Smoky grey pore surface','Dead stubs only - never living','Small and thin','Not a pathogen - reassure client'],
+    'Cerioporus squamosus':      ['Brown scales on cream cap','Short lateral stalk','Mealy watermelon smell','Wound location not base'],
+    'Phellinus robustus':        ['Rough rusty surface on oak','Rusty-orange growing edge','Extremely hard texture','Large - base or lower stem'],
+    'Heterobasidion annosum':    ['White to cream crust at conifer base','No bootlaces','Resinous smell in soil','Most destructive plantation pathogen'],
+    'Phaeolus schweinitzii':     ['Yellow-green margin','Press it - spongy','Conifer base','Fibrous brown remains from last year'],
+    'Sparassis crispa':          ['Cauliflower at pine base','Pale cream lobed fronds','Unique - only one answer','Cannot be confused'],
+    'Trametes versicolor':       ['Multiple colours same bracket','Dead wood only','Thin and flexible','Not a disease - reassure client'],
+    'Daedaleopsis confragosa':   ['Rub pore - goes pink','Maze-like elongated pores','Willow or alder','Blushing is the field test'],
+    'Grifola frondosa':          ['Grey-brown rosette at oak base','Press it - no bruising','Unlike Meripilus - does not bruise','Wavy irregular edges'],
+    'Phellinus pomaceus':        ['Hard bracket on apple or hawthorn','Rosaceae host is the clue','Wound and pruning locations','Cushion or hoof form'],
+    'Phellinus pini':            ['Multiple brackets up pine stem','Resin flow near brackets','Heartwood column - not just base','Hard perennial on Scots pine'],
+    'Pholiota squarrosa':        ['Dry upturned scales on cap','Garlicky unpleasant smell','Clustered mushrooms not brackets','Tawny yellow-brown'],
+    'Pseudoinonotus dryadeus':   ['Amber droplets weeping','Oak root collar location','Check for dried amber staining','Unique - no other fungus does this'],
+    'Rigidoporus ulmarius':      ['Pale cream large angular pores','No brown spore deposits','Largest pore openings of all','Beech or oak base']
+};
+
+let vcImages = [];
+let vcIndex = 0;
+let viewedBeforeAnswer = false;
+let usedCueBeforeAnswer = false;
+
+function latinToDir(latin) {
+    return latin.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
+}
+
+async function probeImages(latin) {
+    const dir = latinToDir(latin);
+    const found = [];
+    for (let i = 1; i <= 10; i++) {
+        const url = `/${dir}/${String(i).padStart(3,'0')}.jpg`;
+        const ok = await new Promise(res => {
+            const img = new Image();
+            img.onload = () => res(true);
+            img.onerror = () => res(false);
+            img.src = url;
+        });
+        if (ok) found.push(url);
+        else break;
+    }
+    return found;
+}
+
+function openVisualClues() {
+    const fungus = allFungi[currentIndex];
+    const answered = document.getElementById('submitBtn').style.display === 'none';
+    if (!answered) {
+        viewedBeforeAnswer = true;
+        document.getElementById('vcBtn').classList.add('penalised');
+        document.getElementById('vcPenaltyNote').textContent = 'Max score capped at 7 — images viewed before answering';
+    } else {
+        document.getElementById('vcPenaltyNote').textContent = 'Post-answer view — no penalty';
+    }
+    document.getElementById('vcModalTitle').textContent = fungus.latinName;
+    document.getElementById('vcModal').classList.add('open');
+    loadVCImages(fungus.latinName);
+    loadVCChips(fungus.latinName, answered);
+}
+
+function closeVisualClues() {
+    document.getElementById('vcModal').classList.remove('open');
+}
+
+async function loadVCImages(latin) {
+    vcImages = [];
+    vcIndex = 0;
+    document.getElementById('vcPlaceholder').style.display = 'flex';
+    document.getElementById('vcImg').style.display = 'none';
+    document.getElementById('vcPrev').style.display = 'none';
+    document.getElementById('vcNext').style.display = 'none';
+    document.getElementById('vcDots').innerHTML = '';
+    document.getElementById('vcImgLabel').textContent = '';
+
+    vcImages = await probeImages(latin);
+
+    if (vcImages.length === 0) {
+        document.getElementById('vcPlaceholder').textContent = 'No images yet — add JPGs to /' + latinToDir(latin) + '/';
+        return;
+    }
+
+    document.getElementById('vcPlaceholder').style.display = 'none';
+    document.getElementById('vcImg').style.display = 'block';
+    if (vcImages.length > 1) {
+        document.getElementById('vcPrev').style.display = 'flex';
+        document.getElementById('vcNext').style.display = 'flex';
+    }
+
+    const dotsEl = document.getElementById('vcDots');
+    vcImages.forEach((_, i) => {
+        const d = document.createElement('button');
+        d.className = 'vc-dot' + (i === 0 ? ' active' : '');
+        d.onclick = () => showVCImage(i);
+        dotsEl.appendChild(d);
+    });
+
+    showVCImage(0);
+}
+
+function showVCImage(i) {
+    vcIndex = i;
+    document.getElementById('vcImg').src = vcImages[i];
+    document.getElementById('vcImgLabel').textContent = `Image ${i+1} of ${vcImages.length}`;
+    document.querySelectorAll('.vc-dot').forEach((d, idx) => {
+        d.className = 'vc-dot' + (idx === i ? ' active' : '');
+    });
+}
+
+function carouselNav(dir) {
+    let next = vcIndex + dir;
+    if (next < 0) next = vcImages.length - 1;
+    if (next >= vcImages.length) next = 0;
+    showVCImage(next);
+}
+
+function loadVCChips(latin, answered) {
+    const cues = CLUE_CUES[latin] || [];
+    const container = document.getElementById('vcChips');
+    container.innerHTML = '';
+    cues.forEach(cue => {
+        const chip = document.createElement('button');
+        chip.className = 'vc-chip' + (answered ? ' revealed' : '');
+        chip.innerHTML = `<span class="vc-chip-text">${answered ? cue : '● ● ●'}</span>`;
+        chip.dataset.cue = cue;
+        if (!answered) {
+            chip.onclick = () => revealChip(chip, latin);
+        }
+        container.appendChild(chip);
+    });
+}
+
+function revealChip(chip, latin) {
+    const answered = document.getElementById('submitBtn').style.display === 'none';
+    if (!answered) {
+        usedCueBeforeAnswer = true;
+        document.getElementById('vcPenaltyNote').textContent = 'Max score capped at 5 — clue cues used before answering';
+    }
+    chip.querySelector('.vc-chip-text').textContent = chip.dataset.cue;
+    chip.classList.add('revealed');
+    chip.onclick = null;
+}
+
+async function showRevealStrip(latin) {
+    const imgs = await probeImages(latin);
+    const strip = document.getElementById('revealStrip');
+    const container = document.getElementById('revealImgs');
+    container.innerHTML = '';
+    if (imgs.length === 0) {
+        container.innerHTML = '<div class="reveal-no-imgs">Add images to /' + latinToDir(latin) + '/ to see them here</div>';
+    } else {
+        imgs.forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = latin;
+            container.appendChild(img);
+        });
+    }
+    strip.classList.add('show');
 }
 
 // ── Teaching Assistant ──
