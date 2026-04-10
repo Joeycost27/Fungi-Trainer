@@ -107,13 +107,40 @@
 
         .instructions {
             background: linear-gradient(to right, #fffbeb, #fef9f0);
-            padding: 14px 18px;
             border-radius: 10px;
             border-left: 3px solid var(--amber);
             margin: 16px 0;
+            overflow: hidden;
         }
-        .instructions p { color: #78350f; font-size: 13.5px; line-height: 1.65; }
-        .instructions strong { color: var(--amber); }
+        .instructions-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 18px; cursor: pointer; user-select: none;
+            font-size: 13px; font-weight: 500; color: #78350f;
+        }
+        .instructions-toggle:hover { background: rgba(200,134,10,0.06); }
+        .instructions-arrow { font-size: 11px; transition: transform 0.2s; color: var(--amber); }
+        .instructions-arrow.open { transform: rotate(180deg); }
+        .instructions-body { padding: 0 18px 14px; }
+        .instructions-body p { color: #78350f; font-size: 13.5px; line-height: 1.65; }
+        .instructions-body strong { color: var(--amber); }
+        .instructions-body.hidden { display: none; }
+
+        .sticky-stats {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(26,39,68,0.96);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 8px 16px;
+            display: none;
+            justify-content: space-between; align-items: center;
+            gap: 8px;
+        }
+        .sticky-stats.visible { display: flex; }
+        .sticky-stat { text-align: center; flex: 1; }
+        .sticky-stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.4); }
+        .sticky-stat-value { font-size: 15px; font-weight: 600; color: #e8e4db; }
+        .sticky-progress { height: 3px; background: rgba(255,255,255,0.1); }
+        .sticky-progress-fill { height: 100%; background: linear-gradient(90deg, var(--indigo), var(--violet)); width: 0%; transition: width 0.4s ease; }
 
         .progress-bar {
             background: #ede9e0;
@@ -532,14 +559,14 @@
         .fc-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(10,14,30,0.85); z-index: 900;
-            align-items: flex-start; justify-content: center;
-            padding: 20px 16px; overflow-y: auto;
+            align-items: center; justify-content: center;
+            padding: 16px;
         }
         .fc-overlay.open { display: flex; }
         .fc-modal {
             background: #12192e; border-radius: 18px; width: 100%;
-            max-width: 560px; border: 1px solid rgba(255,255,255,0.1);
-            margin: auto;
+            max-width: 520px; border: 1px solid rgba(255,255,255,0.1);
+            max-height: 90vh; overflow-y: auto;
         }
         .fc-modal-header {
             padding: 16px 20px 12px; border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -831,7 +858,13 @@
         </div>
 
         <div class="instructions">
-            <p>Read the field observations (roots → foliage), identify the fungus and type its <strong>full Latin binomial name</strong>. Optionally type the <strong>common name</strong> for bonus points. Scoring: Perfect Latin = 10pts · Minor typos = 8pts · Genus only = 4pts · Common name = +5 bonus.</p>
+            <div class="instructions-toggle" onclick="toggleInstructions()">
+                <span>📋 Scoring rules</span>
+                <span class="instructions-arrow" id="instrArrow">▼</span>
+            </div>
+            <div class="instructions-body hidden" id="instrBody">
+                <p>Read the field observations (roots to foliage), identify the fungus and type its <strong>full Latin binomial name</strong>. Optionally type the <strong>common name</strong> for bonus points. Scoring: Perfect Latin = 10pts · Minor typos = 8pts · Genus only = 4pts · Common name = +5 bonus. Viewing images before answering caps score at 7. Using a clue cue caps at 5.</p>
+            </div>
         </div>
 
         <div class="progress-bar">
@@ -857,13 +890,35 @@
         </div>
     </div>
 
+    <!-- STICKY STATS BAR -->
+    <div class="sticky-stats" id="stickyStats">
+        <div class="sticky-stat">
+            <div class="sticky-stat-label">Progress</div>
+            <div class="sticky-stat-value" id="sAttempted">0/0</div>
+        </div>
+        <div class="sticky-stat">
+            <div class="sticky-stat-label">Avg</div>
+            <div class="sticky-stat-value" id="sAvg">—</div>
+        </div>
+        <div class="sticky-stat">
+            <div class="sticky-stat-label">Perfects</div>
+            <div class="sticky-stat-value" id="sPerfects">0</div>
+        </div>
+        <div class="sticky-stat">
+            <div class="sticky-stat-label">Bonus</div>
+            <div class="sticky-stat-value" id="sBonus">0</div>
+        </div>
+    </div>
+    <div class="sticky-progress" id="stickyProgress" style="display:none;">
+        <div class="sticky-progress-fill" id="stickyProgressFill"></div>
+    </div>
+
     <!-- QUESTION CARD -->
     <div class="question-card" style="display:none;" id="questionCard">
         <div class="question-header">
             <div class="question-number" id="questionNum">Question 1</div>
             <div style="display:flex;gap:8px;">
                 <button class="btn-visual-clues" id="vcBtn" onclick="openVisualClues()">📷 Visual Clues</button>
-                <button class="btn-visual-clues" id="fcBtn" onclick="openFieldCards()" style="display:none;">📋 Field Card</button>
             </div>
         </div>
 
@@ -938,6 +993,8 @@
             </div>
             <div class="reveal-imgs" id="revealImgs"></div>
         </div>
+
+        <button class="btn-visual-clues" id="fcBtn" onclick="openFieldCards()" style="display:none; width:100%; justify-content:center; margin-top:10px;">📋 Field Assessment Card</button>
 
         <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Fungus →</button>
     </div>
@@ -1346,6 +1403,13 @@ function nextQuestion() {
     }
 }
 
+function toggleInstructions() {
+    const body = document.getElementById('instrBody');
+    const arrow = document.getElementById('instrArrow');
+    body.classList.toggle('hidden');
+    arrow.classList.toggle('open');
+}
+
 function updateStats() {
     const attempted = userProgress.attempted.length;
     const total = allFungi.length;
@@ -1355,14 +1419,29 @@ function updateStats() {
     document.getElementById('avgScore').textContent = attempted > 0 ? `${avg.toFixed(1)}` : '—';
     document.getElementById('perfectCount').textContent = userProgress.perfectCount;
     document.getElementById('commonBonus').textContent = userProgress.commonCorrect || 0;
-
     document.getElementById('progressFill').style.width = `${(attempted / total) * 100}%`;
+
+    // sticky bar
+    document.getElementById('sAttempted').textContent = `${attempted}/${total}`;
+    document.getElementById('sAvg').textContent = attempted > 0 ? `${avg.toFixed(1)}` : '—';
+    document.getElementById('sPerfects').textContent = userProgress.perfectCount;
+    document.getElementById('sBonus').textContent = userProgress.commonCorrect || 0;
+    document.getElementById('stickyProgressFill').style.width = `${(attempted / total) * 100}%`;
 }
 
 function calculateAverage() {
     if (!userProgress.scores.length) return 0;
     return userProgress.scores.reduce((a, b) => a + b, 0) / userProgress.scores.length;
 }
+
+window.addEventListener('scroll', () => {
+    const header = document.getElementById('headerSection');
+    if (!header) return;
+    const bottom = header.getBoundingClientRect().bottom;
+    const show = bottom < 0;
+    document.getElementById('stickyStats').classList.toggle('visible', show);
+    document.getElementById('stickyProgress').style.display = show ? 'block' : 'none';
+});
 
 // ── Field Cards ──
 const FIELD_CARDS = {
