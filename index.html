@@ -528,6 +528,60 @@
         .reveal-no-imgs { padding: 20px; text-align: center;
             font-size: 12px; color: rgba(255,255,255,0.25); font-style: italic; }
 
+        /* ─── FIELD CARDS MODAL ─── */
+        .fc-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(10,14,30,0.85); z-index: 900;
+            align-items: flex-start; justify-content: center;
+            padding: 20px 16px; overflow-y: auto;
+        }
+        .fc-overlay.open { display: flex; }
+        .fc-modal {
+            background: #12192e; border-radius: 18px; width: 100%;
+            max-width: 560px; border: 1px solid rgba(255,255,255,0.1);
+            margin: auto;
+        }
+        .fc-modal-header {
+            padding: 16px 20px 12px; border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .fc-modal-title { color: #e8e4db; font-size: 15px; font-weight: 600; }
+        .fc-modal-close {
+            background: rgba(255,255,255,0.08); border: none; border-radius: 8px;
+            color: #e8e4db; width: 32px; height: 32px; cursor: pointer;
+            font-size: 16px; display: flex; align-items: center; justify-content: center;
+        }
+        .fc-modal-close:hover { background: rgba(255,255,255,0.18); }
+        .fc-modal-body { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 14px; }
+        .fc-risk-bar {
+            display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+            border-radius: 10px; font-size: 13px; font-weight: 500;
+        }
+        .fc-risk-critical { background: rgba(162,45,45,0.25); color: #f4a0a0; border: 1px solid rgba(162,45,45,0.4); }
+        .fc-risk-high     { background: rgba(133,79,11,0.25); color: #f5c97a; border: 1px solid rgba(133,79,11,0.4); }
+        .fc-risk-moderate { background: rgba(90,100,30,0.25); color: #c8d87a; border: 1px solid rgba(90,100,30,0.4); }
+        .fc-risk-none     { background: rgba(15,110,86,0.2);  color: #7edad4; border: 1px solid rgba(15,110,86,0.35); }
+        .fc-section { display: flex; flex-direction: column; gap: 6px; }
+        .fc-section-label {
+            font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.35); text-transform: uppercase;
+        }
+        .fc-bullets { display: flex; flex-direction: column; gap: 5px; }
+        .fc-bullet { display: flex; gap: 9px; font-size: 13px; color: #c8d0dc; line-height: 1.45; }
+        .fc-dot { width: 5px; height: 5px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+        .fcd-red  { background: #e24b4a; }
+        .fcd-amb  { background: #ba7517; }
+        .fcd-grn  { background: #4a9a6b; }
+        .fc-say {
+            background: rgba(74,124,107,0.15); border-left: 3px solid #4a7c6b;
+            border-radius: 0 8px 8px 0; padding: 10px 14px;
+            font-size: 13px; color: #a8d4c2; line-height: 1.6; font-style: italic;
+        }
+        .fc-footer {
+            border-top: 1px solid rgba(255,255,255,0.06); padding: 10px 20px;
+            font-size: 11px; color: rgba(255,255,255,0.3); font-style: italic;
+        }
+
         .modal-overlay {
             display: none;
             position: fixed;
@@ -807,9 +861,10 @@
     <div class="question-card" style="display:none;" id="questionCard">
         <div class="question-header">
             <div class="question-number" id="questionNum">Question 1</div>
-            <button class="btn-visual-clues" id="vcBtn" onclick="openVisualClues()">
-                📷 Visual Clues
-            </button>
+            <div style="display:flex;gap:8px;">
+                <button class="btn-visual-clues" id="vcBtn" onclick="openVisualClues()">📷 Visual Clues</button>
+                <button class="btn-visual-clues" id="fcBtn" onclick="openFieldCards()" style="display:none;">📋 Field Card</button>
+            </div>
         </div>
 
         <div class="observation-clues">
@@ -910,6 +965,18 @@
 </div>
 
 <!-- TEACHING ASSISTANT MODAL -->
+<!-- FIELD CARDS MODAL -->
+<div class="fc-overlay" id="fcModal">
+    <div class="fc-modal">
+        <div class="fc-modal-header">
+            <div class="fc-modal-title" id="fcModalTitle">Field Assessment Card</div>
+            <button class="fc-modal-close" onclick="closeFieldCards()">✕</button>
+        </div>
+        <div class="fc-modal-body" id="fcModalBody"></div>
+        <div class="fc-footer" id="fcModalFooter"></div>
+    </div>
+</div>
+
 <!-- VISUAL CLUES MODAL -->
 <div class="vc-overlay" id="vcModal">
     <div class="vc-modal">
@@ -1138,6 +1205,7 @@ function displayFungus(index) {
     document.getElementById('scoreDisplay').classList.remove('show', 'perfect', 'good', 'wrong');
     document.getElementById('readingPane').classList.remove('show');
     document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('fcBtn').style.display = 'none';
     document.getElementById('revealStrip').classList.remove('show');
     document.getElementById('revealImgs').innerHTML = '';
     document.getElementById('vcBtn').classList.remove('penalised');
@@ -1233,6 +1301,7 @@ function checkAnswer() {
 
     displayReadingPane(fungus);
     showRevealStrip(fungus.latinName);
+    document.getElementById('fcBtn').style.display = 'inline-flex';
 
     if (!userProgress.attempted.includes(currentIndex)) {
         userProgress.attempted.push(currentIndex);
@@ -1293,6 +1362,465 @@ function updateStats() {
 function calculateAverage() {
     if (!userProgress.scores.length) return 0;
     return userProgress.scores.reduce((a, b) => a + b, 0) / userProgress.scores.length;
+}
+
+// ── Field Cards ──
+const FIELD_CARDS = {
+    'Armillaria mellea': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Black bootlaces in soil at base — unique to this genus'},
+            {c:'red', t:'White mycelial fans under bark at collar when peeled'},
+            {c:'amb', t:'Mushroomy smell when bark lifted'},
+            {c:'amb', t:'Crown thinning from top down — upper crown first'},
+        ],
+        say: ['"Black bootlaces confirm this. Root pathogen — anchorage is the concern. Can spread to neighbouring trees through root contact."'],
+        flags: [
+            {c:'red', t:'Bootlaces are unique — no other common fungus has them'},
+            {c:'amb', t:'Often no fruiting bodies present when crown is already symptomatic'},
+        ],
+        footer: 'Failure: windthrow. Spreads via root contact and rhizomorphs.'
+    },
+    'Ganoderma australe': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Hoof-shaped hard brown bracket at base — matte finish'},
+            {c:'red', t:'Brown powder on ground or bark directly beneath bracket'},
+            {c:'amb', t:'Crown often looks healthy — do not be reassured'},
+            {c:'amb', t:'Bracket adds a layer annually — size indicates duration'},
+        ],
+        say: ['"Hoof bracket plus brown spore dust is Ganoderma australe. Structural roots are compromised. The crown looks fine but that is not reliable here — roots fail before the canopy declines."'],
+        flags: [
+            {c:'red', t:'Crown condition is not a reliable indicator'},
+            {c:'amb', t:'Windthrow risk — consider exposure and lean'},
+            {c:'grn', t:'Underside white pore surface confirms active growth'},
+        ],
+        footer: 'Failure: windthrow. Roots fail before crown declines.'
+    },
+    'Ganoderma applanatum': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Flat shelf bracket at base — not hoof-shaped'},
+            {c:'red', t:'Grey-brown matte surface, no colour zoning'},
+            {c:'amb', t:'Heavy brown spore deposits on ground'},
+            {c:'amb', t:'Scratch white pore surface — browns permanently'},
+        ],
+        say: ['"Flat shelf not hoof — that is applanatum not australe. Same story though: white rot in structural roots, windthrow risk, crown not a reliable guide."'],
+        flags: [
+            {c:'red', t:'Flat = applanatum. Hoof = australe. That is the separation'},
+            {c:'amb', t:'Can grow higher on stem than australe'},
+        ],
+        footer: 'Failure: windthrow. Scratch test distinguishes from other Ganoderma.'
+    },
+    'Ganoderma resinaceum': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Shiny lacquered surface — feels varnished'},
+            {c:'red', t:'Brown bracket but glossy not matte'},
+            {c:'amb', t:'Root collar location, oak or beech'},
+            {c:'amb', t:'Crown often healthy despite root decay'},
+        ],
+        say: ['"That shiny lacquered surface separates it from the other Ganoderma. Same structural concern — white rot in roots, windthrow risk."'],
+        flags: [
+            {c:'red', t:'Feel the surface — lacquered is the diagnostic test'},
+            {c:'amb', t:'Less common than australe/applanatum but same failure risk'},
+        ],
+        footer: 'Failure: windthrow. Resinous coating is the key separation.'
+    },
+    'Kretzschmaria deusta': {
+        risk: 'critical', riskLabel: 'Critical risk',
+        see: [
+            {c:'red', t:'Grey powder or black crust on stem base'},
+            {c:'red', t:'Bark lifting or absent at base'},
+            {c:'red', t:'Wood snaps cleanly — no fibrous tearing, like fired clay'},
+            {c:'amb', t:'Crown can look completely normal — do not be misled'},
+        ],
+        say: ['"That black crust and the brittle snap in the wood beneath is Kretzschmaria. Stem failure risk, not roots. The crown looks fine but this one gives no warning before it goes."'],
+        flags: [
+            {c:'red', t:'No warning before failure — sudden stem snap'},
+            {c:'red', t:'Brittle fracture is unique — no other common fungus does this'},
+            {c:'amb', t:'Grey and black stages are the same fungus at different points'},
+            {c:'amb', t:'Check how much of the circumference is affected'},
+        ],
+        footer: 'Failure: sudden stem snap. Highest priority for action.'
+    },
+    'Meripilus giganteus': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Large rosette of fan-shaped brackets at base'},
+            {c:'red', t:'Press fresh bracket — bruises brown to black'},
+            {c:'amb', t:'Annual and soft — not hard woody like Ganoderma'},
+            {c:'grn', t:'Old fibrous brown remains may be only evidence late season'},
+        ],
+        say: ['"Large rosette and that bruising reaction — that is Meripilus. Root and collar decay, windthrow risk. Bruising is what separates it from Grifola."'],
+        flags: [
+            {c:'red', t:'Bruising test is the critical separation from Grifola frondosa'},
+            {c:'amb', t:'Annual — check for degraded remains outside fruiting season'},
+        ],
+        footer: 'Failure: windthrow. Press it — bruising confirms the ID.'
+    },
+    'Fomes fomentarius': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Grey hoof bracket on stem — not at base'},
+            {c:'red', t:'Concentric grooves on matte grey surface'},
+            {c:'amb', t:'Hard woody perennial — very slow growing'},
+            {c:'amb', t:'Predominantly beech'},
+        ],
+        say: ['"Grey hoof on the stem not the base — that is Fomes not Ganoderma. Heartwood decay, slow progression. Location is the key — stem not root collar."'],
+        flags: [
+            {c:'amb', t:'Brown hoof at base = Ganoderma. Grey hoof on stem = Fomes'},
+            {c:'grn', t:'Slow decay — monitor and reassess rather than immediate action in many cases'},
+        ],
+        footer: 'Failure: stem fracture at decay zone. Location separates from Ganoderma.'
+    },
+    'Inonotus hispidus': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Hairy rough surface — hispidus means hairy'},
+            {c:'red', t:'Rust-brown colour on stem or branches'},
+            {c:'amb', t:'At wounds and branch stubs — not at base'},
+            {c:'amb', t:'Annual — degrades over winter'},
+        ],
+        say: ['"Hairy rust-brown bracket at a wound site on ash — that is Inonotus hispidus. Localised decay at that attachment point. Watch for branch dieback above it."'],
+        flags: [
+            {c:'amb', t:'Causes branch failure at the bracket location'},
+            {c:'grn', t:'Absent bracket in winter does not mean absent decay'},
+        ],
+        footer: 'Failure: branch drop at bracket location. Ash and wound sites.'
+    },
+    'Perenniporia fraxinea': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Pale buff to cream bracket at base — notably pale'},
+            {c:'amb', t:'Small and easy to overlook — not dramatic like Ganoderma'},
+            {c:'amb', t:'Concentrically grooved perennial surface'},
+            {c:'grn', t:'Veteran ash trees particularly'},
+        ],
+        say: ['"Pale buff bracket on ash base — that is Perenniporia fraxinea. Less well known but the same concern as Ganoderma: root decay, windthrow risk. Easy to miss on a veteran tree."'],
+        flags: [
+            {c:'amb', t:'Pale colour distinguishes from all Ganoderma species'},
+            {c:'amb', t:'Particularly significant on veteran and ancient ash'},
+        ],
+        footer: 'Failure: windthrow. Pale colour plus ash host is the combination.'
+    },
+    'Laetiporus sulphureus': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Bright sulphur yellow to orange — unmistakable colour'},
+            {c:'red', t:'Soft and fleshy when fresh'},
+            {c:'amb', t:'On stem or branches — not always at base'},
+            {c:'amb', t:'Annual — degrades and fades by autumn'},
+        ],
+        say: ['"The colour alone tells you — nothing else is that yellow. Laetiporus. Brown rot, delamination. Assess the decay extent at that location before making a call."'],
+        flags: [
+            {c:'amb', t:'Brown rot causes delamination along growth rings — different from white rot'},
+            {c:'grn', t:'Colour unique — no confusion possible'},
+        ],
+        footer: 'Failure: stem or branch fracture at decay zone. Brown rot.'
+    },
+    'Fistulina hepatica': {
+        risk: 'moderate', riskLabel: 'Moderate — slow',
+        see: [
+            {c:'amb', t:'Deep red-brown soft bracket — bleeds red juice when cut'},
+            {c:'amb', t:'At base or stem cavities — chestnut or oak'},
+            {c:'grn', t:'Crown often healthy even with established infection'},
+            {c:'grn', t:'Cavity formation is common and often extensive'},
+        ],
+        say: ['"That red bleeding bracket is Fistulina — beefsteak fungus. Brown rot, but it is slow. Veteran chestnuts carry this for decades. Do not call removal on the bracket alone — assess the cavity and residual wall."'],
+        flags: [
+            {c:'grn', t:'Slow progression — do not overreact on bracket alone'},
+            {c:'amb', t:'Assess cavity dimensions relative to stem diameter'},
+            {c:'grn', t:'Many veteran chestnuts carry this long term — normal finding'},
+        ],
+        footer: 'Failure: butt shear if cavity advanced. Assess residual wall first.'
+    },
+    'Phellinus igniarius': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Grey-black hoof on willow stem'},
+            {c:'red', t:'Extremely hard — hardest common bracket'},
+            {c:'amb', t:'Rusty brown inside when broken'},
+            {c:'amb', t:'Multiple brackets at various stem heights'},
+        ],
+        say: ['"Grey-black hoof on willow — Phellinus igniarius. Heartwood decay, slow progression. Try to break a piece off — that hardness is diagnostic."'],
+        flags: [
+            {c:'amb', t:'Willow host is the primary filter for this ID'},
+            {c:'grn', t:'Slow decay — long established infection common on veteran willow'},
+        ],
+        footer: 'Failure: stem fracture at decay zone. Willow specialist.'
+    },
+    'Fomitopsis betulina': {
+        risk: 'none', riskLabel: 'Not pathogenic',
+        see: [
+            {c:'grn', t:'Round to kidney-shaped brackets on birch'},
+            {c:'grn', t:'White pore surface underneath'},
+            {c:'grn', t:'Pale grey-brown smooth upper surface'},
+            {c:'amb', t:'Tree is already dead or in terminal decline'},
+        ],
+        say: ['"Round brackets with white pores on birch — Fomitopsis betulina. Saprophyte. It did not cause the decline — it colonised after the tree was already dying from something else."'],
+        flags: [
+            {c:'grn', t:'Not pathogenic — do not attribute decline to this fungus'},
+            {c:'amb', t:'Confirms tree is dead or in terminal decline'},
+        ],
+        footer: 'No structural risk from fungus. Tree already in terminal decline.'
+    },
+    'Fomitopsis pinicola': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Red-brown margin at actively growing bracket edge'},
+            {c:'red', t:'Grey-black older surface — red belt is diagnostic'},
+            {c:'amb', t:'Conifer host — pine, spruce, fir, larch'},
+            {c:'amb', t:'Resinous appearance'},
+        ],
+        say: ['"Red margin on a conifer bracket — only Fomitopsis pinicola does that. Brown rot. The red belt is the ID."'],
+        flags: [
+            {c:'red', t:'Red margin is unique among common conifer brackets'},
+            {c:'amb', t:'Brown rot — cubic cracking in affected wood'},
+        ],
+        footer: 'Failure: stem fracture at decay zone. Red margin is diagnostic.'
+    },
+    'Bjerkandera adusta': {
+        risk: 'none', riskLabel: 'No structural risk',
+        see: [
+            {c:'grn', t:'Small thin brackets on confirmed dead stubs only'},
+            {c:'grn', t:'Smoky grey pore surface'},
+            {c:'grn', t:'Tree otherwise in normal condition'},
+        ],
+        say: ['"Small smoky brackets on dead stubs only — Bjerkandera. Saprophyte. Normal in maturing trees. No action needed and important to tell the client that."'],
+        flags: [
+            {c:'grn', t:'Exclusively on dead tissue — if on living wood reconsider the ID'},
+            {c:'amb', t:'Commonly mistaken for pathogen — correct identification matters here'},
+        ],
+        footer: 'No action required. Normal deadwood colonisation.'
+    },
+    'Cerioporus squamosus': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Brown scales on cream cap surface'},
+            {c:'red', t:'Distinct short lateral stalk — unique among common brackets'},
+            {c:'amb', t:'Strong mealy or watermelon rind smell'},
+            {c:'amb', t:'At wounds and branch scars — not at base'},
+        ],
+        say: ['"Scaly cap with a stalk — only Cerioporus squamosus has that combination. Wound decay, not root rot. Assess the cavity at that wound location."'],
+        flags: [
+            {c:'amb', t:'Annual — fast growing in spring, gone by autumn'},
+            {c:'grn', t:'Root system not affected — concern is wound location only'},
+        ],
+        footer: 'Failure: stem or branch fracture at wound. Not a root pathogen.'
+    },
+    'Phellinus robustus': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Rough surface texture — not smooth like Ganoderma'},
+            {c:'red', t:'Rusty-orange at actively growing margin'},
+            {c:'amb', t:'On oak base or lower stem — very hard'},
+            {c:'amb', t:'Grey-brown to rusty-brown overall'},
+        ],
+        say: ['"Rough rusty bracket on oak base — that rough texture and the orange margin rules out Ganoderma. Phellinus robustus. Heartwood decay at base and lower stem."'],
+        flags: [
+            {c:'amb', t:'Rough surface is the key separation from smooth Ganoderma'},
+            {c:'amb', t:'Less common than Ganoderma — worth confirming the texture'},
+        ],
+        footer: 'Failure: stem fracture at butt. Rough texture plus oak = Phellinus robustus.'
+    },
+    'Heterobasidion annosum': {
+        risk: 'critical', riskLabel: 'Critical — plantation',
+        see: [
+            {c:'red', t:'White to cream irregular crust or bracket at conifer base'},
+            {c:'red', t:'No bootlaces — separates from Armillaria'},
+            {c:'amb', t:'Resinous smell in soil around base'},
+            {c:'amb', t:'White mycelial mat under bark at root collar'},
+        ],
+        say: ['"White crust at conifer base with no bootlaces — Heterobasidion annosum. Most destructive plantation pathogen in Europe. Butt and root rot. Check the stump treatment history if there has been recent felling nearby."'],
+        flags: [
+            {c:'red', t:'No rhizomorphs — that is the separation from Armillaria'},
+            {c:'red', t:'Can spread via freshly cut stumps — stump treatment context important'},
+            {c:'amb', t:'Often no external symptoms until decay is very advanced'},
+        ],
+        footer: 'Failure: windthrow or butt shear. No symptoms until late stage.'
+    },
+    'Phaeolus schweinitzii': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Yellow-green actively growing margin'},
+            {c:'red', t:'Press it — soft and spongy when fresh'},
+            {c:'amb', t:'Conifer base — pine, larch, spruce'},
+            {c:'grn', t:'Fibrous rust-brown remains from previous seasons nearby'},
+        ],
+        say: ['"Yellow-green margin on a spongy bracket at a conifer base — only Phaeolus. Brown rot in structural roots. Press test and colour together make this one easy."'],
+        flags: [
+            {c:'red', t:'Yellow-green margin is unique — no other common fungus has this'},
+            {c:'amb', t:'Annual — previous year remains are still useful evidence'},
+        ],
+        footer: 'Failure: windthrow. Spongy texture plus yellow-green margin.'
+    },
+    'Sparassis crispa': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Cauliflower or brain-shaped pale cream mass at base'},
+            {c:'red', t:'No bracket form — entirely different morphology'},
+            {c:'amb', t:'Scots pine base primarily'},
+            {c:'grn', t:'Cannot be confused with anything else'},
+        ],
+        say: ['"Cauliflower at the base of a pine — that is Sparassis crispa, only possible answer. Brown rot in the roots. The shape is unique."'],
+        flags: [
+            {c:'grn', t:'Morphologically unique — if it looks like a cauliflower at a pine base it is this'},
+        ],
+        footer: 'Failure: windthrow. Brown rot. Unique morphology makes ID straightforward.'
+    },
+    'Trametes versicolor': {
+        risk: 'none', riskLabel: 'No structural risk',
+        see: [
+            {c:'grn', t:'Multiple colour zones in same bracket — blue, grey, brown, cream'},
+            {c:'grn', t:'Thin flexible brackets on confirmed dead wood'},
+            {c:'grn', t:'Tree otherwise in normal healthy condition'},
+        ],
+        say: ['"Those multicoloured thin brackets are Trametes versicolor — Turkey Tail. Saprophyte on dead wood. It is not a disease. Normal and expected in maturing trees."'],
+        flags: [
+            {c:'grn', t:'Strictly on dead tissue — confirms natural deadwood only'},
+            {c:'amb', t:'Clients frequently flag this as disease — correct communication important'},
+        ],
+        footer: 'No action needed. Significant for accurate client communication.'
+    },
+    'Daedaleopsis confragosa': {
+        risk: 'moderate', riskLabel: 'Weak pathogen',
+        see: [
+            {c:'red', t:'Rub pore surface firmly — goes pink within seconds'},
+            {c:'amb', t:'Maze-like elongated pores not circular'},
+            {c:'amb', t:'Willow or alder host'},
+            {c:'grn', t:'At wounds and dying branches'},
+        ],
+        say: ['"Rub the pore surface — if it blushes pink that is Daedaleopsis. Weak pathogen on stressed willow and alder. Accelerates decline at existing wounds but not a primary structural failure risk."'],
+        flags: [
+            {c:'amb', t:'Blushing test is unique — only common bracket that does this'},
+            {c:'grn', t:'Weak pathogen — not a primary cause of structural failure'},
+        ],
+        footer: 'Failure risk: low. Accelerates decline at existing wound sites.'
+    },
+    'Grifola frondosa': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Grey-brown rosette of fan-shaped brackets at oak base'},
+            {c:'red', t:'Press it — no bruising reaction'},
+            {c:'amb', t:'Wavy irregular bracket edges'},
+            {c:'amb', t:'Annual — late summer to autumn'},
+        ],
+        say: ['"Grey-brown rosette at an oak base and it does not bruise when pressed — that is Grifola not Meripilus. Root and collar decay, windthrow risk. The bruise test is the separation."'],
+        flags: [
+            {c:'red', t:'No bruising = Grifola. Bruises black = Meripilus. Always test'},
+            {c:'amb', t:'Oak specialist — host is a useful supporting observation'},
+        ],
+        footer: 'Failure: windthrow. Bruise test is the critical field separation.'
+    },
+    'Phellinus pomaceus': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Hard bracket on apple, hawthorn, cherry or plum'},
+            {c:'red', t:'Rosaceae host is the diagnostic context'},
+            {c:'amb', t:'At wounds and pruning cuts on stem and branches'},
+            {c:'amb', t:'Cushion to hoof form — extremely hard'},
+        ],
+        say: ['"Hard perennial bracket on a Rosaceae host — apple, hawthorn, plum — that is Phellinus pomaceus. The host tells you before anything else. Wound decay, localised branch failure risk."'],
+        flags: [
+            {c:'red', t:'Rosaceae host is the single most reliable observation'},
+            {c:'amb', t:'Three Phellinus on exam: igniarius (willow), pomaceus (apple/hawthorn), pini (pine)'},
+        ],
+        footer: 'Failure: branch failure at wound location. Host is the key.'
+    },
+    'Phellinus pini': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Multiple hard brackets at various heights on pine stem'},
+            {c:'red', t:'Resin flow on bark near brackets'},
+            {c:'amb', t:'Not just at base — heartwood column through stem'},
+            {c:'amb', t:'Scots pine primarily'},
+        ],
+        say: ['"Multiple hard brackets up the pine stem with resin flow near them — Phellinus pini. Heartwood column decay, not just butt rot. Failure risk distributed along the whole stem height."'],
+        flags: [
+            {c:'red', t:'Decay extends as a column — failure can occur anywhere on stem'},
+            {c:'amb', t:'Resin exudate at bracket sites is a useful supporting observation'},
+        ],
+        footer: 'Failure: stem fracture at any height. Column decay not just base.'
+    },
+    'Pholiota squarrosa': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Dry upturned scales on tawny yellow-brown cap'},
+            {c:'red', t:'Pronounced garlicky unpleasant smell'},
+            {c:'amb', t:'Clustered mushrooms not brackets'},
+            {c:'amb', t:'At base, root collar or stem wounds'},
+        ],
+        say: ['"Clustered scaly mushrooms with that garlicky smell — Pholiota squarrosa. Mushroom form not bracket, note that clearly in your report. White rot at root collar and heartwood."'],
+        flags: [
+            {c:'red', t:'Mushroom not bracket — important distinction for reports'},
+            {c:'amb', t:'Garlicky smell is a reliable field confirmation'},
+        ],
+        footer: 'Failure: root collar and basal decay. Mushroom form — document clearly.'
+    },
+    'Pseudoinonotus dryadeus': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Amber droplets on bracket surface — weeping appearance'},
+            {c:'red', t:'Oak root collar location — nowhere else'},
+            {c:'amb', t:'Check for dried amber staining if droplets absent'},
+            {c:'amb', t:'Rust-brown pore surface underneath'},
+        ],
+        say: ['"Amber weeping droplets at the oak root collar — that is Pseudoinonotus dryadeus, only possible answer. Root collar decay, windthrow risk. If no fresh droplets, check for dried amber staining."'],
+        flags: [
+            {c:'red', t:'Amber exudate unique — no other common fungus produces this'},
+            {c:'amb', t:'Current name is Pseudoinonotus dryadeus — use in reports'},
+        ],
+        footer: 'Failure: windthrow. Amber droplets are unique — only one answer.'
+    },
+    'Rigidoporus ulmarius': {
+        risk: 'high', riskLabel: 'High risk',
+        see: [
+            {c:'red', t:'Pale cream to buff large bracket — noticeably pale'},
+            {c:'red', t:'Large angular pore openings — largest of common brackets'},
+            {c:'amb', t:'No brown spore deposits — separates from all Ganoderma'},
+            {c:'amb', t:'Beech or oak base — historically elm'},
+        ],
+        say: ['"Pale cream bracket with large angular pores and no spore deposits — Rigidoporus. Pale colour plus pore size separates it from every Ganoderma. Root decay, windthrow risk."'],
+        flags: [
+            {c:'red', t:'No brown spore deposits — reliable negative indicator for Ganoderma'},
+            {c:'amb', t:'Pore openings visibly larger than any Ganoderma — check underneath'},
+        ],
+        footer: 'Failure: windthrow. Pale colour plus large pores = Rigidoporus.'
+    }
+};
+
+function openFieldCards() {
+    const fungus = allFungi[currentIndex];
+    const card = FIELD_CARDS[fungus.latinName];
+    if (!card) {
+        document.getElementById('fcModalBody').innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;padding:10px 0;">No field card available for this species yet.</p>';
+        document.getElementById('fcModalFooter').textContent = '';
+        document.getElementById('fcModal').classList.add('open');
+        return;
+    }
+    const riskClass = {critical:'fc-risk-critical', high:'fc-risk-high', moderate:'fc-risk-moderate', none:'fc-risk-none'}[card.risk] || 'fc-risk-none';
+    const dotClass = {red:'fcd-red', amb:'fcd-amb', grn:'fcd-grn'};
+
+    let html = `<div class="fc-risk-bar ${riskClass}">${card.riskLabel}</div>`;
+
+    html += `<div class="fc-section"><div class="fc-section-label">What you observe</div><div class="fc-bullets">`;
+    card.see.forEach(b => { html += `<div class="fc-bullet"><div class="fc-dot ${dotClass[b.c]}"></div>${b.t}</div>`; });
+    html += `</div></div>`;
+
+    html += `<div class="fc-section"><div class="fc-section-label">What you say</div><div class="fc-say">${card.say[0]}</div></div>`;
+
+    html += `<div class="fc-section"><div class="fc-section-label">Key flags</div><div class="fc-bullets">`;
+    card.flags.forEach(b => { html += `<div class="fc-bullet"><div class="fc-dot ${dotClass[b.c]}"></div>${b.t}</div>`; });
+    html += `</div></div>`;
+
+    document.getElementById('fcModalBody').innerHTML = html;
+    document.getElementById('fcModalFooter').textContent = card.footer;
+    document.getElementById('fcModal').classList.add('open');
+}
+
+function closeFieldCards() {
+    document.getElementById('fcModal').classList.remove('open');
 }
 
 // ── Visual Clues ──
@@ -1386,7 +1914,7 @@ async function loadVCImages(latin) {
     vcImages = await probeImages(latin);
 
     if (vcImages.length === 0) {
-        document.getElementById('vcPlaceholder').textContent = 'No images yet — add JPGs to /' + latinToDir(latin) + '/';
+        document.getElementById('vcPlaceholder').textContent = 'No images loaded yet';
         return;
     }
 
@@ -1457,12 +1985,12 @@ async function showRevealStrip(latin) {
     const container = document.getElementById('revealImgs');
     container.innerHTML = '';
     if (imgs.length === 0) {
-        container.innerHTML = '<div class="reveal-no-imgs">Add images to /' + latinToDir(latin) + '/ to see them here</div>';
+        container.innerHTML = '<div class="reveal-no-imgs">Images will appear here once added to the repository</div>';
     } else {
         imgs.forEach(src => {
             const img = document.createElement('img');
             img.src = src;
-            img.alt = latin;
+            img.alt = 'Field observation';
             container.appendChild(img);
         });
     }
